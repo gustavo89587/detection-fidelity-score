@@ -1,0 +1,28 @@
+
+---
+
+## Intended audience
+
+- Detection Engineers
+- SecOps Architects
+- Privacy Engineers
+- Security Platform Teams
+- CISOs seeking defensible trade-off decisions
+
+---
+
+## Philosophy
+
+Privacy is not the opposite of detection.  
+It is a **design constraint**.
+
+DFS treats detection as an engineered system operating under real-world limits — and measures how that system behaves.
+
+---
+
+## Status
+
+This repository defines a **benchmark and methodology**, not a finished product.
+
+The pace of implementation follows evidence and demand — not hype.
+
