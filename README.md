@@ -63,8 +63,9 @@ DFS is based on a few high-level dimensions:
 - Analyst cost  
   Time and cognitive effort required to validate the alert
 
-DFS does not aim for precision math.
-It aims for explicit reasoning.
+DFS does not aim for mathematical precision.
+It aims for explicit, reviewable reasoning.
+
 
 ---
 
