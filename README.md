@@ -1,5 +1,12 @@
 # Detection Fidelity Score (DFS)
 
+Detection engineering is not about writing rules.
+It’s about making decisions under uncertainty.
+
+This repository explores how to reason about detection quality
+by modeling signal, noise, and analyst confidence explicitly.
+
+
 **Stop guessing if anonymization breaks detection. Measure it.**
 
 Detection Fidelity Score (DFS) is a methodology to **measure, not debate**, how privacy-preserving transformations (redaction, anonymization, pseudonymization) impact detection effectiveness.
