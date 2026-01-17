@@ -15,34 +15,55 @@ coverage, noise, and analyst cost.
 
 ## Why this exists
 
-Discussions about privacy and detection are usually opinion-based:
+## Why this exists
 
-- “Redaction breaks detections”
-- “We need raw data for correlation”
-- “Privacy makes SOC blind”
+Many detections are technically correct but operationally weak.
 
-Yet very few teams can answer, objectively:
+They trigger on real attacker behavior,
+but also overlap heavily with legitimate admin activity.
 
-- *How much detection capability was lost?*
-- *Which techniques are affected?*
-- *Which fields truly matter for detection?*
-- *Does correlation still hold under anonymization?*
+This creates a problem:
+- Analysts lose trust in alerts
+- SOC fatigue increases
+- Good signals get ignored
 
-DFS exists to replace intuition with **measurable, reproducible evidence**.
+DFS exists to help reason about this problem *before* shipping a detection.
+
+## Example use case
+
+A detection engineer is reviewing a rule change.
+
+The change increases coverage,
+but also introduces additional benign matches.
+
+The question is not:
+"Does this detect more behavior?"
+
+The real question is:
+"Does this improve analyst decision-making?"
+
+DFS frames this as a fidelity problem:
+How much confidence does each alert provide
+relative to the cost it introduces?
+
 
 ---
 
-## Core principle
+## Core concepts
 
-**Same input.  
-Same detection logic.  
-One variable: the pipeline.**
+DFS is based on a few high-level dimensions:
 
-Detection fidelity is evaluated by running the **same detections** over:
-- Raw telemetry (baseline)
-- Privacy-preserving telemetry (via OpenTelemetry Collector)
+- Signal clarity  
+  How clearly the alert points to malicious intent
 
-Any change in detection behavior becomes **measurable system behavior**, not speculation.
+- Noise overlap  
+  How often the same behavior appears in benign workflows
+
+- Analyst cost  
+  Time and cognitive effort required to validate the alert
+
+DFS does not aim for precision math.
+It aims for explicit reasoning.
 
 ---
 
