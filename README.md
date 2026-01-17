@@ -4,8 +4,9 @@ Detection engineering is not about writing more rules.
 It’s about making decisions under uncertainty.
 
 This repository introduces the idea of a Detection Fidelity Score (DFS):
-a way to reason about how much *decision confidence* a detection gives
-to an analyst under real SOC conditions.
+a way to reason about how much *decision confidence*
+a detection provides to an analyst under real SOC conditions.
+
 
 DFS is not a tool and not a SIEM feature.
 It is a mental framework to evaluate trade-offs between
