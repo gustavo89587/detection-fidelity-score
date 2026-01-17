@@ -1,10 +1,15 @@
 # Detection Fidelity Score (DFS)
 
-Detection Fidelity Score (DFS) is a methodology for objectively measuring the impact of privacy transformations (redaction, pseudonymization, anonymization) on the effectiveness of detections.
+Detection engineering is not about writing more rules.
+It’s about making decisions under uncertainty.
 
-DFS is not a SIEM package, nor a set of rules.
+This repository introduces the idea of a Detection Fidelity Score (DFS):
+a way to reason about how much *decision confidence* a detection gives
+to an analyst under real SOC conditions.
 
-It is a method for **measuring and comparing trade-offs** in detection engineering — especially when privacy enters as a system variable.
+DFS is not a tool and not a SIEM feature.
+It is a mental framework to evaluate trade-offs between
+coverage, noise, and analyst cost.
 
 ---
 
