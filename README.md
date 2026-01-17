@@ -16,8 +16,6 @@ coverage, noise, and analyst cost.
 
 ## Why this exists
 
-## Why this exists
-
 Many detections are technically correct but operationally weak.
 
 They trigger on real attacker behavior,
@@ -98,4 +96,14 @@ It provides a **method to reason about trade-offs**.
 ---
 
 ## Repository structure
+
+- README.md  
+  Core concepts and reasoning framework behind Detection Fidelity Score (DFS).
+
+- docs/ (optional, future)  
+  Extended notes, examples, or references if the framework evolves.
+
+This repository intentionally prioritizes clarity of reasoning
+over implementation details.
+
 
