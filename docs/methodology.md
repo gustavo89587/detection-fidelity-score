@@ -1,5 +1,7 @@
 # Detection Fidelity Score — Methodology
 
+This document describes a technical methodology to evaluate detection behavior under constrained transformations. It intentionally focuses on measurement rigor, not operational or organizational outcomes.
+
 ## Objective
 
 To objectively measure how privacy-preserving transformations affect detection effectiveness, correlation, and coverage.
