@@ -1,11 +1,15 @@
 Detection Fidelity Score (DFS)
+Engineering trust in detection systems
 Why this exists
 
 Many of the problems labeled as SOC fatigue, brittle detections, or unsafe automation are not tooling failures.
 
 They are structural failures of trust.
 
-At scale, organizations ask humans and systems to act on signals whose evidence strength, ambiguity, and downstream cost were never made explicit. Analysts absorb this as fatigue. Organizations absorb it as risk.
+At scale, organizations ask humans and systems to act on signals whose evidence strength, ambiguity, and downstream cost were never made explicit.
+
+Analysts absorb this as fatigue.
+Organizations absorb it as risk.
 
 The Detection Fidelity Score (DFS) introduces a simple but disciplined premise:
 
@@ -13,42 +17,17 @@ Trust in detection systems must be explicit, reasoned, and proportional to impac
 
 DFS exists to operationalize that premise.
 
-What this is (and is not)
-
-DFS is:
-
-A structured lens for evaluating detection quality
-
-A model for reasoning about when automation is justified
-
-A shared language between detection engineers, SOC analysts, and leadership
-
-A way to make detection debt visible
-
-DFS is not:
-
-A SIEM feature or product
-
-A replacement for threat modeling
-
-A substitute for analyst judgment
-
-A mathematical formula pretending to eliminate nuance
-
-DFS does not remove human decision-making.
-It clarifies when it is truly required.
-
 The structural problem
 
 Detection systems fail in two symmetrical ways:
 
 1. Rigidity
 
-When innovation or new telemetry challenges legacy logic, systems become defensive. Rules persist without revalidation. Signal meaning erodes.
+When new telemetry, attacker behavior, or architectural change challenges legacy logic, systems become defensive. Rules persist without revalidation. Signal meaning erodes.
 
 2. Subjectivity
 
-Detections are built and tuned on intuition, habit, or inherited playbooks without explicit decision criteria.
+Detections are built and tuned on intuition, habit, or inherited playbooks — without explicit decision criteria.
 
 Both produce the same outcome:
 
@@ -66,7 +45,7 @@ This ambiguity scales faster than discernment.
 
 Detection fidelity as a decision model
 
-Detection Fidelity is not about reducing volume.
+Detection Fidelity is not about reducing alert volume.
 
 It is about improving decision quality per signal.
 
@@ -80,7 +59,7 @@ Reduces cognitive friction during triage
 
 Supports confident action
 
-A low-fidelity detection may still fire frequently —
+A low-fidelity detection may fire frequently —
 but it does so by externalizing cost onto analysts and operations.
 
 Volume is a metric.
@@ -114,23 +93,79 @@ What is the cost of being wrong — and who absorbs it?
 
 Is automation justified at this fidelity level?
 
-If these questions cannot be answered clearly, fidelity is likely low — regardless of how “advanced” the detection appears.
+If these questions cannot be answered clearly, fidelity is likely low — regardless of how advanced the detection appears.
 
-Why this matters beyond the SOC
+Why this matters now
 
-The same trust failure patterns appear in:
+Detection systems are becoming:
 
-Automated response pipelines
+More automated
 
-AI-driven agent workflows
+More abstracted
 
-Security control orchestration
+More AI-assisted
 
-Open ecosystems built on implicit trust
+More dependent on complex telemetry pipelines
 
-As automation accelerates, the cost of unclear trust boundaries compounds.
+At the same time:
 
-DFS is a way to reason about when trust is earned — before humans or autonomous systems are forced to act.
+Telemetry silently degrades
+
+Schemas evolve
+
+Privacy controls alter signal semantics
+
+Regulatory scrutiny increases accountability for automated decisions
+
+When degradation is invisible, organizations either:
+
+Over-trust automation
+
+Or under-trust their own detection systems
+
+DFS exists to make trust boundaries explicit before they fail in production.
+
+Executive interpretation
+
+DFS helps security leaders answer:
+
+Where are we over-trusting automation?
+
+Which detections are unsafe to auto-respond?
+
+Where does telemetry loss create blind spots?
+
+Which alerts truly require human judgment?
+
+What detection risk are we carrying without visibility?
+
+DFS does not replace tooling.
+
+It provides a defensible structure for reasoning about detection trustworthiness — especially when automation and AI increase the cost of being wrong.
+
+What this is (and is not)
+DFS is:
+
+A structured lens for evaluating detection trustworthiness
+
+A model for reasoning about justified automation
+
+A shared language between detection engineers, SOC analysts, and leadership
+
+A way to make detection debt visible
+
+DFS is not:
+
+A SIEM feature or product
+
+A replacement for threat modeling
+
+A substitute for analyst judgment
+
+A mathematical formula pretending to eliminate nuance
+
+DFS does not remove human decision-making.
+It clarifies when it is truly required.
 
 A lens, not a silver bullet
 
@@ -140,7 +175,7 @@ It aims to:
 
 Make tradeoffs explicit
 
-Shift discussion from alert volume to decision integrity
+Shift discussions from alert volume to decision integrity
 
 Re-center detection engineering around human sustainability
 
@@ -159,6 +194,8 @@ Fidelity thresholds by SOC maturity model
 Mapping DFS to MITRE ATT&CK techniques
 
 Integration patterns with automation pipelines
+
+CI-based detection trust regression
 
 Real-world feedback is encouraged.
 
