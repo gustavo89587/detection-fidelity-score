@@ -1,120 +1,172 @@
-# Detection Fidelity Score (DFS)
+Detection Fidelity Score (DFS)
+Why this exists
 
-## Why this exists
+Many of the problems labeled as SOC fatigue, brittle detections, or unsafe automation are not tooling failures.
 
-Many of the problems we label as **SOC fatigue**, **brittle detections**, or **insecure automation** are not tooling failures. They are symptoms of the same structural issue: **trust decisions made without explicit, shared criteria**.
+They are structural failures of trust.
 
-At scale, organizations routinely ask humans and systems to act on signals whose **fidelity, intent, and downstream cost** were never clearly assessed. The result is invisible debt — analysts absorb it as fatigue, and organizations absorb it as risk.
+At scale, organizations ask humans and systems to act on signals whose evidence strength, ambiguity, and downstream cost were never made explicit. Analysts absorb this as fatigue. Organizations absorb it as risk.
 
-This repository introduces the **Detection Fidelity Score (DFS)** as a *lens* for reasoning about trust, attention, and action in detection systems.
+The Detection Fidelity Score (DFS) introduces a simple but disciplined premise:
 
-> **The issue isn’t control vs innovation — it’s the lack of explicit criteria for trust.**
+Trust in detection systems must be explicit, reasoned, and proportional to impact.
 
----
+DFS exists to operationalize that premise.
 
-## What this is (and is not)
+What this is (and is not)
 
-**DFS is:**
+DFS is:
 
-* A conceptual framework to reason about detection quality
-* A way to make detection debt visible
-* A shared language between engineers, SOC analysts, and leadership
+A structured lens for evaluating detection quality
 
-**DFS is not:**
+A model for reasoning about when automation is justified
 
-* A SIEM feature or product
-* A replacement for threat modeling or analyst judgment
-* A silver bullet for alert fatigue
+A shared language between detection engineers, SOC analysts, and leadership
 
----
+A way to make detection debt visible
 
-## The core problem
+DFS is not:
 
-Detection systems tend to fail in two opposite but equally damaging ways:
+A SIEM feature or product
 
-1. **Rigidity** — when innovation challenges existing frameworks, systems become defensive and blind to new approaches.
-2. **Subjectivity** — when detections are built and tuned based on intuition, habit, or inherited rules rather than explicit criteria.
+A replacement for threat modeling
 
-Both lead to the same outcome: **unclear trust boundaries**. Alerts are generated without a shared understanding of what truly deserves human attention or automated action.
+A substitute for analyst judgment
 
----
+A mathematical formula pretending to eliminate nuance
 
-## Detection fidelity as a model
+DFS does not remove human decision-making.
+It clarifies when it is truly required.
 
-Detection Fidelity is not about volume reduction. It is about **decision quality**.
+The structural problem
 
-A high‑fidelity detection:
+Detection systems fail in two symmetrical ways:
 
-* Clearly represents adversary behavior
-* Minimizes overlap with benign activity
-* Improves analyst decision‑making rather than consuming it
+1. Rigidity
 
-A low‑fidelity detection may still trigger often, but it does so at a high **human and organizational cost**.
+When innovation or new telemetry challenges legacy logic, systems become defensive. Rules persist without revalidation. Signal meaning erodes.
 
----
+2. Subjectivity
 
-## Core dimensions
+Detections are built and tuned on intuition, habit, or inherited playbooks without explicit decision criteria.
 
-DFS evaluates detections across several conceptual dimensions:
+Both produce the same outcome:
 
-* **Signal Clarity** — How clearly does the signal indicate malicious or high‑risk behavior?
-* **Noise Overlap** — How often does benign activity resemble this signal?
-* **Analyst Cost** — What cognitive, temporal, and emotional effort is required to triage it?
-* **Actionability** — Does the alert meaningfully inform a decision or response?
+Unclear trust boundaries.
 
-These dimensions are intentionally qualitative first. Precision without understanding only accelerates bad decisions.
+Alerts are generated without a shared understanding of:
 
----
+What decision they demand
 
-## How to think with DFS
+Who should make it
 
-DFS is meant to guide questions, not enforce answers:
+What happens if it is wrong
 
-1. What decision is this detection asking a human or system to make?
-2. What evidence supports that decision?
-3. What is the cost if this signal is wrong — and who pays it?
-4. Should this ever page a human, or remain contextual only?
+This ambiguity scales faster than discernment.
 
-If these questions cannot be answered clearly, fidelity is likely low — regardless of alert volume.
+Detection fidelity as a decision model
 
----
+Detection Fidelity is not about reducing volume.
 
-## Why this matters beyond the SOC
+It is about improving decision quality per signal.
 
-The same trust failures appear in:
+A high-fidelity detection:
 
-* Automated response pipelines
-* Agent‑based AI workflows
-* Open‑source ecosystems with implicit trust
+Strongly represents adversary behavior
 
-When criteria for trust are implicit, systems scale faster than discernment. DFS provides a way to reason about *when* trust is earned — before humans or autonomous systems are forced to act.
+Minimizes benign overlap
 
----
+Reduces cognitive friction during triage
 
-## A lens, not a solution
+Supports confident action
 
-DFS does not aim to eliminate alert fatigue or prevent every failure. Its purpose is to:
+A low-fidelity detection may still fire frequently —
+but it does so by externalizing cost onto analysts and operations.
 
-* Make tradeoffs explicit
-* Shift conversations from volume to fidelity
-* Re‑center detection engineering around human impact
+Volume is a metric.
+Fidelity is a property of trust.
 
----
+Core dimensions
 
-## Open questions
+DFS evaluates detections across four primary dimensions:
 
-This work is intentionally incomplete. Open areas include:
+Signal Clarity — How strongly does the signal indicate malicious or high-risk behavior?
 
-* How should fidelity be measured quantitatively without losing nuance?
-* How do different SOC models change acceptable fidelity thresholds?
-* Where should automation stop and human judgment begin?
+Noise Overlap — How frequently does legitimate activity resemble this signal?
 
-Thoughtful disagreement and real‑world feedback are encouraged.
+Analyst Cost — What cognitive, temporal, and escalation burden does triage impose?
 
----
+Actionability — Does this detection meaningfully change a decision or response path?
 
-## Closing thought
+These dimensions are qualitative by design.
 
-Detection systems do not fail because people are careless. They fail because trust is assumed instead of designed.
+Precision without reasoning simply accelerates bad automation.
 
-Making fidelity explicit is the first step toward systems that scale without burning the humans inside them.
+The operational question
+
+Before a detection pages a human or triggers automation, DFS asks:
+
+What decision is this detection demanding?
+
+What evidence supports that decision?
+
+What is the cost of being wrong — and who absorbs it?
+
+Is automation justified at this fidelity level?
+
+If these questions cannot be answered clearly, fidelity is likely low — regardless of how “advanced” the detection appears.
+
+Why this matters beyond the SOC
+
+The same trust failure patterns appear in:
+
+Automated response pipelines
+
+AI-driven agent workflows
+
+Security control orchestration
+
+Open ecosystems built on implicit trust
+
+As automation accelerates, the cost of unclear trust boundaries compounds.
+
+DFS is a way to reason about when trust is earned — before humans or autonomous systems are forced to act.
+
+A lens, not a silver bullet
+
+DFS does not promise to eliminate alert fatigue.
+
+It aims to:
+
+Make tradeoffs explicit
+
+Shift discussion from alert volume to decision integrity
+
+Re-center detection engineering around human sustainability
+
+Enable safer automation
+
+Roadmap
+
+This framework is intentionally evolving.
+
+Future development areas include:
+
+Quantitative scoring models that preserve nuance
+
+Fidelity thresholds by SOC maturity model
+
+Mapping DFS to MITRE ATT&CK techniques
+
+Integration patterns with automation pipelines
+
+Real-world feedback is encouraged.
+
+Closing principle
+
+Detection systems rarely fail because people are careless.
+
+They fail because trust was assumed instead of designed.
+
+Making fidelity explicit is how detection systems scale
+without burning the humans inside them.
