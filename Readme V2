@@ -1,125 +1,118 @@
-# Detection Fidelity Score (DFS)
+Detection Fidelity Score (DFS)
+A framework for engineering trust in detection systems
 
-## A framework for engineering trust in detection systems
+Detection Fidelity Score (DFS) is a framework for reasoning about how detections behave under real-world constraints.
 
-Detection Fidelity Score (DFS) is a **framework for reasoning about how detection systems behave under real‑world constraints**.
+Instead of asking “does this detection work?”, DFS asks:
 
-Rather than asking *“does this detection work?”*, DFS asks:
+Where does this detection degrade — and can we predict, measure, and reason about that degradation before it causes harm?
 
-> **Where does this detection degrade, and can we predict, measure, and reason about that degradation before it causes harm?**
+DFS treats detection as both:
 
-DFS positions detection as both:
+an engineering system (pipelines, schemas, latency, failure modes), and
 
-* an **engineering system** (pipelines, schemas, latency, failure modes), and
-* an **architecture of trust** (when a signal deserves human or automated action).
+an architecture of trust (when a signal warrants human escalation or automated action).
 
-It is intentionally not a product, a SIEM feature, or a prescriptive scorecard.
+DFS is intentionally not a product, a SIEM feature, or a prescriptive scorecard.
 
----
+The DFS core model
 
-## The DFS Core Model
+DFS models degradation across three failure domains:
 
-DFS models detection degradation across **three failure domains**:
+Loss — the signal is missing, delayed, or incomplete
 
-* **Loss** — the signal is missing, delayed, or incomplete
-* **Distortion** — the signal survives but loses semantic meaning
-* **Drift** — the signal breaks as assumptions decay over time
+Distortion — the signal survives but loses semantic meaning
 
-Together, these domains define **explicit trust boundaries** in detection systems.
+Drift — the signal breaks as assumptions decay over time
 
-→ See the full model: `docs/core-model.md`
+Together, these domains define explicit trust boundaries in detection systems.
 
----
+→ Full model: docs/core-model.md
 
-## What DFS produces
+What DFS produces
 
-DFS does **not** produce a single magic number.
+DFS does not produce a single magic number.
 
 It produces:
 
-* A **degradation profile** across Loss, Distortion, and Drift
-* Identified failure modes
-* Explicit trust assumptions
-* Engineering guidance on where robustness matters most
+A degradation profile across Loss, Distortion, and Drift
 
-This allows teams to reason about **detection debt** before it manifests as alert fatigue, blind spots, or unsafe automation.
+Concrete failure modes and their triggers
 
----
+Explicit trust assumptions
 
-## What DFS is (and is not)
+Guidance on where robustness and verification matter most
 
-**DFS is:**
+This helps teams surface detection debt before it becomes alert fatigue, blind spots, or unsafe automation.
 
-* A conceptual and technical framework
-* A shared language between detection engineers, SOC analysts, and leadership
-* A way to make implicit trust decisions explicit
+What DFS is (and is not)
 
-**DFS is not:**
+DFS is:
 
-* A SIEM replacement
-* A false‑positive tuning methodology
-* A measure of analyst performance or business impact
+A conceptual + technical framework
 
-DFS evaluates **detection mechanics**, not SOC outcomes.
+A shared language between detection engineers, SOC analysts, and leadership
 
----
+A way to make implicit trust decisions explicit
 
-## Example: One detection, three failure domains
+DFS is not:
 
-**Detection:** Suspicious PowerShell execution with encoded commands
+A SIEM replacement
 
-### Loss
+A false-positive tuning playbook
 
-* Telemetry dropped under endpoint CPU pressure
-* Process command line truncated due to field length limits
+A metric for analyst performance
 
-**Impact:** Entire executions disappear from detection scope
+DFS evaluates detection trustworthiness under degradation — not SOC effectiveness, which depends on staffing, process, and response design.
 
-**Trust outcome:** ❌ Cannot trust absence of alerts
+Example: one detection, three failure domains
 
----
+Detection: Suspicious PowerShell execution with encoded commands
 
-### Distortion
+Loss
 
-* Base64 content partially redacted for privacy
-* Case normalization alters pattern matching
+Telemetry dropped under endpoint CPU pressure
 
-**Impact:** Detection fires inconsistently and with reduced context
+Command line truncated due to field length limits
 
-**Trust outcome:** ⚠️ Alerts require high analyst effort to interpret
+Impact: Entire executions disappear from detection scope
+Trust outcome: ❌ You cannot trust the absence of alerts
 
----
+Distortion
 
-### Drift
+Base64 content partially redacted for privacy
 
-* Endpoint agent update changes command‑line field naming
-* Detection relies on implicit default normalization behavior
+Normalization alters pattern matching
 
-**Impact:** Detection silently stops matching
+Impact: Inconsistent matches + reduced context
+Trust outcome: ⚠️ Alerts demand higher analyst effort to interpret
 
-**Trust outcome:** ❌ Trust decays over time without visibility
+Drift
 
----
+Agent update changes field naming
 
-### DFS Interpretation
+Detection relies on implicit default parsing/normalization behavior
 
-This detection is not "bad" — but its **trustworthiness is conditional**:
+Impact: Detection silently stops matching
+Trust outcome: ❌ Trust decays over time without visibility
 
-* Unsafe under Loss
-* Fragile under Distortion
-* Unstable under Drift
+DFS interpretation
 
-DFS makes those conditions explicit.
+This detection isn’t “bad” — its trustworthiness is conditional:
 
----
+Unsafe under Loss
 
-## First technical artifact: DFS Result Schema (MVP)
+Fragile under Distortion
 
-The first concrete DFS artifact is **not code execution**, but a shared result contract.
+Unstable under Drift
 
-### DFS Result (conceptual schema)
+DFS makes those conditions explicit — and therefore actionable.
 
-```json
+First technical artifact: DFS result contract (MVP)
+
+DFS starts with a shared result contract, not code.
+
+DFS result (conceptual schema)
 {
   "detection": "powershell_encoded_command",
   "environment": "endpoint_windows",
@@ -134,38 +127,38 @@ The first concrete DFS artifact is **not code execution**, but a shared result c
     },
     "drift": {
       "risk": "high",
-      "signals": ["schema_change", "default_behavior"]
+      "signals": ["schema_change", "implicit_defaults"]
     }
   },
   "trust_boundary": "contextual_only",
-  "notes": "Do not page on absence; suitable for enrichment only"
+  "notes": "Do not page on absence; use for enrichment and correlation."
 }
-```
 
-This schema:
 
-* Forces explicit reasoning
-* Enables tooling later without locking design early
-* Keeps human trust decisions visible
+Why this matters:
 
----
+Forces explicit reasoning
 
-## Design principle
+Enables tooling later without locking design early
 
-> Detection systems should degrade **predictably and measurably**, not silently.
+Keeps trust boundaries visible to humans and automation
 
-DFS exists to ensure that trust in detection is **designed, not assumed**.
+Design principle
 
----
+Detection systems should degrade predictably and measurably — not silently.
 
-## Status
+DFS exists to ensure trust in detection is designed, tested, and maintained, not assumed.
 
-DFS is currently a **framework and methodology**, not a finished implementation.
+Status
+
+DFS is currently a framework and methodology, not a finished implementation.
 
 Future work may include:
 
-* Automated Loss / Distortion / Drift testing
-* CI‑based trust regression
-* Comparative analysis across detection stacks
+Automated Loss / Distortion / Drift testing
 
-Thoughtful disagreement and real‑world feedback are encouraged.
+CI-based trust regression (“does this detection still mean what we think it means?”)
+
+Comparative analysis across telemetry stacks and pipelines
+
+Thoughtful disagreement and real-world feedback are encouraged.
