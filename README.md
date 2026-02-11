@@ -230,3 +230,6 @@ They fail because trust was assumed instead of designed.
 
 Making fidelity explicit is how detection systems scale
 without burning the humans inside them.
+
+Detection Fidelity Score (DFS)
+Originally formulated by Gustavo Okamoto — © 2026
