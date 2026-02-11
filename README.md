@@ -1,6 +1,29 @@
-Detection Fidelity Score (DFS)
-Engineering trust in detection systems
-Why this exists
+        Detection Fidelity Score (DFS)
+      Engineering trust in detection systems
+                
+                Detection Signal
+                        │
+                        ▼
+        ┌─────────────────────────────┐
+        │      Degradation Domains    │
+        │                             │
+        │   • Loss        (missing)   │
+        │   • Distortion  (altered)   │
+        │   • Drift       (decayed)   │
+        └─────────────────────────────┘
+                       │
+                       ▼
+            Trust Decision Boundary
+                       │
+                       ▼
+           Human │ Automated │ Contextual
+     Detection trust is not binary. It degrades.
+        DFS makes that degradation measurable.
+
+
+
+## Why this exists
+
 
 Many of the problems labeled as SOC fatigue, brittle detections, or unsafe automation are not tooling failures.
 
