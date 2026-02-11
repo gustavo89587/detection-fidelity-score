@@ -1,138 +1,67 @@
 Detection Fidelity Score (DFS)
+
 © 2026 Gustavo Okamoto
-Licensed under Apache 2.0
+Licensed under the Apache License, Version 2.0
 
-        
-        
-        Detection Fidelity Score (DFS)
-      Engineering trust in detection systems
-                
-                Detection Signal
-                        │
-                        ▼
-        ┌─────────────────────────────┐
-        │      Degradation Domains    │
-        │                             │
-        │   • Loss        (missing)   │
-        │   • Distortion  (altered)   │
-        │   • Drift       (decayed)   │
-        └─────────────────────────────┘
-                       │
-                       ▼
-            Trust Decision Boundary
-                       │
-                       ▼
-           Human │ Automated │ Contextual
-     Detection trust is not binary. It degrades.
-        DFS makes that degradation measurable.
+Engineering and Governing Trust in Automated Security Decisions
+Detection Signal
+        │
+        ▼
+┌─────────────────────────────┐
+│     Degradation Domains     │
+│                             │
+│   • Loss        (missing)   │
+│   • Distortion  (altered)   │
+│   • Drift       (decayed)   │
+└─────────────────────────────┘
+        │
+        ▼
+   Trust Decision Boundary
+        │
+        ▼
+ Human │ Automated │ Contextual
 
 
+Detection trust is not binary. It degrades.
+DFS makes that degradation explicit, measurable, and governable.
 
-## Why this exists
+Executive Summary
 
+Detection systems and automated responses increasingly make high-impact decisions:
 
-Many of the problems labeled as SOC fatigue, brittle detections, or unsafe automation are not tooling failures.
+Account lockouts
 
-They are structural failures of trust.
+Endpoint isolation
 
-At scale, organizations ask humans and systems to act on signals whose evidence strength, ambiguity, and downstream cost were never made explicit.
+Token revocation
 
-Analysts absorb this as fatigue.
-Organizations absorb it as risk.
+Privilege removal
 
-The Detection Fidelity Score (DFS) introduces a simple but disciplined premise:
+AI-assisted triage
 
-Trust in detection systems must be explicit, reasoned, and proportional to impact.
+Yet most organizations cannot clearly explain:
 
-DFS exists to operationalize that premise.
+Why a signal is trusted
 
-The structural problem
+When automation is justified
 
-Detection systems fail in two symmetrical ways:
+What degradation invalidates trust
 
-1. Rigidity
+Who revalidates assumptions over time
 
-When new telemetry, attacker behavior, or architectural change challenges legacy logic, systems become defensive. Rules persist without revalidation. Signal meaning erodes.
+DFS is a structured model for designing, validating, and governing trust in automated security decision systems.
 
-2. Subjectivity
+It transforms implicit confidence into explicit trust boundaries.
 
-Detections are built and tuned on intuition, habit, or inherited playbooks — without explicit decision criteria.
+Why This Matters Now
 
-Both produce the same outcome:
-
-Unclear trust boundaries.
-
-Alerts are generated without a shared understanding of:
-
-What decision they demand
-
-Who should make it
-
-What happens if it is wrong
-
-This ambiguity scales faster than discernment.
-
-Detection fidelity as a decision model
-
-Detection Fidelity is not about reducing alert volume.
-
-It is about improving decision quality per signal.
-
-A high-fidelity detection:
-
-Strongly represents adversary behavior
-
-Minimizes benign overlap
-
-Reduces cognitive friction during triage
-
-Supports confident action
-
-A low-fidelity detection may fire frequently —
-but it does so by externalizing cost onto analysts and operations.
-
-Volume is a metric.
-Fidelity is a property of trust.
-
-Core dimensions
-
-DFS evaluates detections across four primary dimensions:
-
-Signal Clarity — How strongly does the signal indicate malicious or high-risk behavior?
-
-Noise Overlap — How frequently does legitimate activity resemble this signal?
-
-Analyst Cost — What cognitive, temporal, and escalation burden does triage impose?
-
-Actionability — Does this detection meaningfully change a decision or response path?
-
-These dimensions are qualitative by design.
-
-Precision without reasoning simply accelerates bad automation.
-
-The operational question
-
-Before a detection pages a human or triggers automation, DFS asks:
-
-What decision is this detection demanding?
-
-What evidence supports that decision?
-
-What is the cost of being wrong — and who absorbs it?
-
-Is automation justified at this fidelity level?
-
-If these questions cannot be answered clearly, fidelity is likely low — regardless of how advanced the detection appears.
-
-Why this matters now
-
-Detection systems are becoming:
+Security systems are becoming:
 
 More automated
 
-More abstracted
-
 More AI-assisted
+
+More abstracted
 
 More dependent on complex telemetry pipelines
 
@@ -144,17 +73,112 @@ Schemas evolve
 
 Privacy controls alter signal semantics
 
-Regulatory scrutiny increases accountability for automated decisions
+Risk engines become probabilistic inputs to deterministic automation
 
-When degradation is invisible, organizations either:
+Without explicit degradation modeling, automation scales both confidence and error.
 
-Over-trust automation
+DFS exists to ensure automation scales responsibly.
 
-Or under-trust their own detection systems
+The Core Model
 
-DFS exists to make trust boundaries explicit before they fail in production.
+DFS models degradation across three domains:
 
-Executive interpretation
+Loss
+
+Signal missing, delayed, or incomplete.
+
+Distortion
+
+Signal survives but semantic meaning changes.
+
+Drift
+
+Assumptions decay over time as systems and behaviors evolve.
+
+These domains define explicit Trust Decision Boundaries.
+
+If degradation is unbounded, automation eligibility must be restricted.
+
+→ See: docs/core-model.md
+
+Automation Governance Model
+
+DFS introduces governance tiers for automated actions:
+
+Tier 1 — Eligible for Automation
+
+Tier 2 — Human-Assisted Automation
+
+Tier 3 — Contextual Only
+
+Automation is not a capability decision.
+It is a trust decision.
+
+→ See: docs/automation-governance-model.md
+
+Testing & Validation
+
+Degradation must be continuously tested.
+
+DFS defines validation strategies for:
+
+Telemetry completeness (Loss)
+
+Schema and semantic stability (Distortion)
+
+Assumption revalidation (Drift)
+
+Trust decays unless actively maintained.
+
+→ See: docs/core-model.md (Domain Testing Strategies)
+
+Applied Examples
+
+DFS includes structured real-world scenarios across:
+
+IAM automation
+
+MFA fatigue detection
+
+OAuth abuse
+
+Impossible travel
+
+EDR auto-isolation
+
+Incident-based drift analysis
+
+Each example models:
+
+Degradation profile
+
+Trust boundary
+
+Governance tier
+
+Validation requirements
+
+→ See: examples/
+
+How to Apply DFS in 30 Minutes
+
+Select one automated detection or response.
+
+Model its Loss, Distortion, and Drift exposure.
+
+Declare the Trust Decision Boundary explicitly.
+
+Assign a Governance Tier.
+
+Define revalidation triggers.
+
+Document assumptions.
+
+If you cannot explain when automation becomes unsafe, trust is implicit.
+
+DFS makes it explicit.
+
+Executive Interpretation
 
 DFS helps security leaders answer:
 
@@ -166,76 +190,57 @@ Where does telemetry loss create blind spots?
 
 Which alerts truly require human judgment?
 
-What detection risk are we carrying without visibility?
+What decision risk are we carrying invisibly?
 
 DFS does not replace tooling.
+It governs how tooling is trusted.
 
-It provides a defensible structure for reasoning about detection trustworthiness — especially when automation and AI increase the cost of being wrong.
+What DFS Is
 
-What this is (and is not)
-DFS is:
+An engineering model for detection trust
 
-A structured lens for evaluating detection trustworthiness
+A governance framework for automation eligibility
 
-A model for reasoning about justified automation
+A shared language between engineers and leadership
 
-A shared language between detection engineers, SOC analysts, and leadership
+A method to make detection debt visible
 
-A way to make detection debt visible
+What DFS Is Not
 
-DFS is not:
+A SIEM product
 
-A SIEM feature or product
+A tuning methodology
 
-A replacement for threat modeling
+A scoring gimmick
 
-A substitute for analyst judgment
+A replacement for human judgment
 
-A mathematical formula pretending to eliminate nuance
-
-DFS does not remove human decision-making.
-It clarifies when it is truly required.
-
-A lens, not a silver bullet
-
-DFS does not promise to eliminate alert fatigue.
-
-It aims to:
-
-Make tradeoffs explicit
-
-Shift discussions from alert volume to decision integrity
-
-Re-center detection engineering around human sustainability
-
-Enable safer automation
+DFS clarifies when human judgment is required.
 
 Roadmap
 
-This framework is intentionally evolving.
-
 Future development areas include:
 
-Quantitative scoring models that preserve nuance
+Quantitative fidelity modeling
 
-Fidelity thresholds by SOC maturity model
+SOC maturity-aligned governance thresholds
 
-Mapping DFS to MITRE ATT&CK techniques
+MITRE ATT&CK alignment
 
-Integration patterns with automation pipelines
+CI-based trust regression
 
-CI-based detection trust regression
+AI-agent autonomy constraints
 
-Real-world feedback is encouraged.
+DFS evolves deliberately and versioned.
 
-Closing principle
+→ See: docs/evolution-and-versioning.md
 
-Detection systems rarely fail because people are careless.
+Attribution
 
-They fail because trust was assumed instead of designed.
-
-Making fidelity explicit is how detection systems scale
-without burning the humans inside them.
-
+Detection Fidelity Score (DFS)
 Originally formulated and maintained by Gustavo Okamoto.
 
+DFS is designed for long-term structural clarity, not trend cycles.
+
+Trust must not be assumed.
+It must be engineered.
