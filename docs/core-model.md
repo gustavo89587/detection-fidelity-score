@@ -1,18 +1,14 @@
-Excelente. Agora vamos transformar DFS definitivamente em engenharia aplicável, não apenas modelo conceitual.
-
-Abaixo está a seção pronta para docs/core-model.md:
-
 Domain Testing Strategies
 
 Formal definitions are insufficient without verification.
 
-Each degradation domain in DFS should be paired with explicit testing and validation strategies.
+Each degradation domain in DFS must be paired with explicit testing and validation strategies.
 
 Detection trust must be continuously exercised — not assumed.
 
 Testing for Loss
 
-Loss testing validates that required telemetry is present, complete, and timely.
+Loss testing validates that required telemetry remains present, complete, and timely.
 
 Objectives
 
@@ -25,46 +21,51 @@ Validate field completeness
 Surface silent pipeline drops
 
 Engineering Strategies
-
 1. Canary Telemetry
 
-Inject synthetic, known signals into the pipeline at controlled intervals.
+Inject synthetic, controlled signals into the telemetry pipeline at defined intervals.
 
 Verify end-to-end ingestion
 
-Validate detection triggering
+Confirm detection triggering
 
 Alert if expected events disappear
+
+Canaries convert silent Loss into observable failure.
 
 2. Telemetry Coverage Audits
 
 Continuously measure:
 
-Event count deviations
+Event volume deviations
 
 Field null-rate anomalies
 
 Ingestion latency thresholds
 
+Loss is often gradual before it becomes catastrophic.
+
 3. Negative Trust Validation
 
 Explicitly test:
 
-Can we safely trust silence?
+Can absence of alerts be trusted?
 
-Under what Loss conditions does absence become meaningless?
+Under what Loss conditions does silence become meaningless?
+
+Absence must be engineered — not inferred.
 
 Failure Signal
 
-If absence cannot be trusted, automation based on silence must be restricted.
+If absence cannot be trusted, automation based on silence must be restricted or eliminated.
 
 Testing for Distortion
 
-Distortion testing validates that signal semantics remain stable.
+Distortion testing validates that signal semantics remain stable under transformation.
 
 Objectives
 
-Detect schema drift
+Detect schema alterations
 
 Identify normalization side effects
 
@@ -73,38 +74,43 @@ Validate redaction impact
 Surface encoding inconsistencies
 
 Engineering Strategies
-
 1. Schema Validation Contracts
 
-Enforce schema version checks
+Enforce explicit schema version checks
 
-Alert on field renaming or type changes
+Alert on field renaming, type changes, or normalization shifts
 
-Validate normalization assumptions
+Validate transformation assumptions
 
-2. Semantic Regression Tests
+Detection logic must not rely on implicit parsing behavior.
 
-Replay known malicious samples and verify:
+2. Semantic Regression Testing
+
+Replay known malicious samples and validate:
 
 Pattern matching stability
 
-Context integrity
+Context preservation
 
-Expected enrichment consistency
+Enrichment consistency
+
+If replayed behavior produces different interpretation, semantic degradation is occurring.
 
 3. Redaction Impact Simulation
 
-Model privacy transformations and measure detection performance before/after.
+Model privacy-driven transformations and measure detection behavior before and after transformation.
+
+Privacy constraints are design inputs — not afterthoughts.
 
 Failure Signal
 
-If detection output meaning changes without code change, Distortion is occurring.
+If detection meaning changes without intentional logic modification, Distortion is active.
 
-Automation must be revalidated.
+Automation and trust boundaries must be revalidated.
 
 Testing for Drift
 
-Drift testing validates detection assumptions over time.
+Drift testing validates detection assumptions across time and environmental change.
 
 Objectives
 
@@ -112,17 +118,16 @@ Identify assumption decay
 
 Detect adversary technique evolution
 
-Validate environmental stability
+Validate environmental invariants
 
 Engineering Strategies
-
 1. Periodic Assumption Review
 
-Document detection assumptions explicitly:
+Explicitly document:
 
 Required fields
 
-Expected behaviors
+Behavioral assumptions
 
 Platform defaults
 
@@ -130,56 +135,68 @@ Environmental invariants
 
 Revalidate on a scheduled cadence.
 
+If assumptions are undocumented, Drift cannot be detected.
+
 2. Behavioral Coverage Reassessment
 
-Map detection logic to adversary behaviors (e.g., technique categories).
+Map detection logic to adversary behaviors or technique classes.
 
 Evaluate:
 
 Is the behavior still relevant?
 
-Has the technique shifted?
+Has attacker implementation shifted?
+
+Does telemetry still express the behavior clearly?
+
+Relevance is temporal.
 
 3. Change-Triggered Revalidation
 
-Any of the following should trigger Drift review:
+The following events must trigger Drift review:
 
-Agent upgrade
+Agent upgrades
 
-Schema change
+Schema revisions
 
-Platform migration
+Platform migrations
 
 Infrastructure redesign
 
+Change without revalidation accelerates Drift.
+
 Failure Signal
 
-If a detection appears operational but no longer reflects current adversary behavior or environment assumptions, Drift is active.
+If a detection appears operational but no longer reflects current adversary behavior or environmental assumptions, Drift is active.
+
+Drift is silent until explicitly tested.
 
 Cross-Domain Compounding Effects
 
-Degradation domains interact:
+Degradation domains interact and compound:
 
-Loss may hide Drift.
+Loss may conceal Drift.
 
-Distortion may mimic Noise.
+Distortion may appear as Noise.
 
-Drift may normalize previously suspicious behavior.
+Drift may normalize previously anomalous behavior.
 
-Testing must assume compounding, not isolation.
+Testing must assume interaction, not isolation.
+
+DFS evaluates degradation as bounded trust erosion — not binary failure.
 
 Operationalizing Trust
 
-DFS testing is not about eliminating degradation.
+DFS testing does not eliminate degradation.
 
-It is about:
+It ensures degradation is:
 
-Making degradation observable
+Observable
 
-Bounding acceptable trust erosion
+Bounded
 
-Preventing silent automation risk
+Explicitly accepted or mitigated
 
-Detection systems should not merely run.
+Detection systems should not merely execute logic.
 
-They should continuously prove their trustworthiness.
+They must continuously demonstrate trustworthiness.
