@@ -1,5 +1,30 @@
-DFS Automation Governance Model v0.1
-Purpose
+            DFS Automation Governance Model v0.1
+                 Detection / Decision Signal
+                              │
+                              ▼
+                    Degradation Profile
+               (Loss | Distortion | Drift)
+                              │
+                              ▼
+                    Trust Decision Boundary
+                              │
+                              ▼
+                     Governance Tier Assignment
+          ┌───────────────┬────────────────┬────────────────┐
+          │               │                │                │
+          ▼               ▼                ▼                ▼
+     Tier 1           Tier 2           Tier 3         Contextual
+   Automated        Human-Assisted     Restricted        Only
+                              │
+                              ▼
+                      Revalidation Loop
+        (Change Trigger | Drift Review | Audit | Testing)
+                              │
+                              └───────────────┐
+                                              ▼
+                                  Trust Boundary Update
+
+##Purpose
 
 The DFS Automation Governance Model defines how trust boundaries determine when automated security actions are justified.
 
