@@ -1,0 +1,50 @@
+Intended Audience
+
+DFS is designed for professionals responsible for the integrity of detection systems:
+
+Detection Engineers
+
+SecOps Architects
+
+Security Platform Teams
+
+Privacy Engineers balancing signal and data minimization
+
+CISOs and security leaders seeking defensible trade-off decisions
+
+DFS is most useful where detection decisions carry operational, reputational, or regulatory weight.
+
+Philosophy
+
+Detection and privacy are not opposing forces.
+Privacy is a design constraint, not a barrier.
+
+DFS assumes detection systems operate under real-world constraints:
+
+Partial telemetry
+
+Schema evolution
+
+Performance limits
+
+Legal and privacy boundaries
+
+The question is not whether degradation exists —
+but whether it is understood, measured, and made explicit.
+
+DFS treats detection as an engineered trust system.
+And engineered systems must define how they fail.
+
+Status
+
+DFS currently defines a methodology and benchmark model, not a finished implementation.
+
+Its evolution prioritizes:
+
+Conceptual rigor
+
+Operational applicability
+
+Evidence-driven iteration
+
+Development follows signal and real-world validation — not hype cycles.
