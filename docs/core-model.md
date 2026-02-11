@@ -1,150 +1,185 @@
-# Detection Fidelity Score (DFS)
+Excelente. Agora vamos transformar DFS definitivamente em engenharia aplicável, não apenas modelo conceitual.
 
-## Core Model: Loss, Distortion, Drift
+Abaixo está a seção pronta para docs/core-model.md:
 
-DFS positions detection engineering as **both an engineering discipline and an architecture-of-trust problem**. It evaluates how detection systems behave when exposed to real-world constraints, rather than ideal conditions.
+Domain Testing Strategies
 
-The core question DFS asks is:
+Formal definitions are insufficient without verification.
 
-> *How does this detection degrade — and can we predict, measure, and reason about that degradation before it causes harm?*
+Each degradation domain in DFS should be paired with explicit testing and validation strategies.
 
-DFS models degradation across **three failure domains**: **Loss**, **Distortion**, and **Drift**.
+Detection trust must be continuously exercised — not assumed.
 
----
+Testing for Loss
 
-## 1. Loss — When the signal disappears or arrives too late
+Loss testing validates that required telemetry is present, complete, and timely.
 
-**Loss** describes failures where detection-relevant information is **missing, delayed, or incomplete**.
+Objectives
 
-This includes:
+Detect missing events
 
-* Telemetry drops
-* Parsing failures
-* Rate limiting and backpressure
-* Queue overflows
-* Latency that invalidates detection windows
-* Partial enrichment failures
+Identify ingestion delay
 
-Loss is primarily a **pipeline integrity problem**.
+Validate field completeness
 
-### Why Loss matters
+Surface silent pipeline drops
 
-A detection cannot reason about behavior it never sees. Loss failures are dangerous because they often remain **silent** — no alert fires, and no error is raised.
+Engineering Strategies
 
-DFS treats Loss as a **measurable engineering risk**, not an operational accident.
+1. Canary Telemetry
 
----
+Inject synthetic, known signals into the pipeline at controlled intervals.
 
-## 2. Distortion — When the signal survives but loses meaning
+Verify end-to-end ingestion
 
-**Distortion** occurs when telemetry still flows, but **semantic meaning is altered** enough to weaken or break detections.
+Validate detection triggering
 
-This includes:
+Alert if expected events disappear
 
-* Field redaction or truncation
-* Pseudonymization altering join behavior
-* Schema normalization inconsistencies
-* Minor formatting or casing changes
-* Field-order assumptions
-* Overly brittle pattern matching
+2. Telemetry Coverage Audits
 
-Distortion reveals **detection fragility**.
+Continuously measure:
 
-### Why Distortion matters
+Event count deviations
 
-A distorted signal may still trigger alerts, but at reduced confidence, increased noise, or misleading context. This is where false positives, analyst fatigue, and mis-triage accumulate.
+Field null-rate anomalies
 
-DFS evaluates whether detections are **robust to reasonable variation**, not whether they only work under perfect formatting.
+Ingestion latency thresholds
 
----
+3. Negative Trust Validation
 
-## 3. Drift — When the world changes underneath the detection
+Explicitly test:
 
-**Drift** describes failures caused by **environmental or semantic change**, even in the absence of an attacker.
+Can we safely trust silence?
 
-This includes:
+Under what Loss conditions does absence become meaningless?
 
-* Schema evolution
-* Attribute renaming
-* Default behavior changes
-* Collector / agent upgrades
-* Vendor-side telemetry changes
-* Implicit assumptions baked into rules
+Failure Signal
 
-Drift is a **time-based trust failure**.
+If absence cannot be trusted, automation based on silence must be restricted.
 
-### Why Drift matters
+Testing for Distortion
 
-Detections often fail not because they were wrong, but because their assumptions were never made explicit. Drift exposes detections that rely on **unstated contracts** with upstream systems.
+Distortion testing validates that signal semantics remain stable.
 
-DFS measures how tightly a detection is coupled to unstable semantics.
+Objectives
 
----
+Detect schema drift
 
-## The DFS Degradation Model
+Identify normalization side effects
 
-```
-        ┌───────────────┐
-        │   Telemetry   │
-        └───────┬───────┘
-                │
-        ┌───────▼───────┐
-        │   Pipeline    │
-        │ (Transforms)  │
-        └───────┬───────┘
-                │
-     ┌──────────▼──────────┐
-     │   Detection Engine  │
-     └──────────┬──────────┘
-                │
-        ┌───────▼───────┐
-        │    Alerting   │
-        └───────────────┘
+Validate redaction impact
 
-Loss       → signal never reaches detection
-Distortion → signal reaches detection with degraded meaning
-Drift      → detection assumptions decay over time
-```
+Surface encoding inconsistencies
 
-Each domain answers a different trust question:
+Engineering Strategies
 
-* **Loss:** *Can I trust that the signal exists?*
-* **Distortion:** *Can I trust what the signal means?*
-* **Drift:** *Can I trust that this meaning will remain stable?*
+1. Schema Validation Contracts
 
----
+Enforce schema version checks
 
-## DFS as Engineering + Trust Architecture
+Alert on field renaming or type changes
 
-From an **engineering perspective**, DFS:
+Validate normalization assumptions
 
-* Treats detection as a system under load and constraint
-* Makes degradation observable and testable
-* Encourages resilient, explicit design
+2. Semantic Regression Tests
 
-From a **trust architecture perspective**, DFS:
+Replay known malicious samples and verify:
 
-* Defines when a signal deserves human or automated action
-* Makes hidden assumptions visible
-* Prevents silent erosion of confidence
+Pattern matching stability
 
-DFS does not judge detections as "good" or "bad". It maps **where trust holds — and where it does not**.
+Context integrity
 
----
+Expected enrichment consistency
 
-## What DFS Produces
+3. Redaction Impact Simulation
 
-Rather than a single score, DFS yields:
+Model privacy transformations and measure detection performance before/after.
 
-* A **degradation profile** across Loss, Distortion, and Drift
-* Identified failure modes
-* Explicit trust boundaries
-* Engineering guidance on where robustness matters most
+Failure Signal
 
----
+If detection output meaning changes without code change, Distortion is occurring.
 
-## Closing Principle
+Automation must be revalidated.
 
-> Detection systems should degrade **predictably and measurably**, not silently.
+Testing for Drift
 
-DFS exists to ensure that trust in detection is **designed, not assumed**.
+Drift testing validates detection assumptions over time.
+
+Objectives
+
+Identify assumption decay
+
+Detect adversary technique evolution
+
+Validate environmental stability
+
+Engineering Strategies
+
+1. Periodic Assumption Review
+
+Document detection assumptions explicitly:
+
+Required fields
+
+Expected behaviors
+
+Platform defaults
+
+Environmental invariants
+
+Revalidate on a scheduled cadence.
+
+2. Behavioral Coverage Reassessment
+
+Map detection logic to adversary behaviors (e.g., technique categories).
+
+Evaluate:
+
+Is the behavior still relevant?
+
+Has the technique shifted?
+
+3. Change-Triggered Revalidation
+
+Any of the following should trigger Drift review:
+
+Agent upgrade
+
+Schema change
+
+Platform migration
+
+Infrastructure redesign
+
+Failure Signal
+
+If a detection appears operational but no longer reflects current adversary behavior or environment assumptions, Drift is active.
+
+Cross-Domain Compounding Effects
+
+Degradation domains interact:
+
+Loss may hide Drift.
+
+Distortion may mimic Noise.
+
+Drift may normalize previously suspicious behavior.
+
+Testing must assume compounding, not isolation.
+
+Operationalizing Trust
+
+DFS testing is not about eliminating degradation.
+
+It is about:
+
+Making degradation observable
+
+Bounding acceptable trust erosion
+
+Preventing silent automation risk
+
+Detection systems should not merely run.
+
+They should continuously prove their trustworthiness.
