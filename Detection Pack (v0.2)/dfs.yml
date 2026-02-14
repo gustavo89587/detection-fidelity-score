@@ -1,0 +1,47 @@
+cat > "Detection Pack (v0.2)/DFS-MSHTA-REMOTE-001/dfs.yml" <<'EOF'
+dfs_version: "1.0"
+detection_id: "DFS-MSHTA-REMOTE-001"
+
+hypothesis: >
+  Adversary uses mshta.exe to execute remote HTA/script content as a drift
+  alternative to PowerShell staging.
+
+telemetry_requirements:
+  required:
+    - source: Sysmon
+      event_id: 1
+      fields: [Image, CommandLine, ParentImage, User, IntegrityLevel]
+    - source: Security
+      event_id: 4688
+      fields: [NewProcessName, CommandLine, SubjectUserName]
+
+trust_decision_boundary:
+  decision: "Escalate to analyst triage"
+  tier: "T2"
+  automated_response: false
+  rationale: >
+    Strong LOLBin signal requiring process tree validation.
+
+degradation_profile:
+  loss:
+    risk: medium
+    cause: ["Process logging disabled"]
+  distortion:
+    risk: high
+    cause: ["CommandLine truncation"]
+  drift:
+    risk: medium
+    evolution_paths:
+      - "Switch to rundll32"
+      - "Switch to regsvr32"
+
+validation_protocol:
+  pass:
+    - "ProcessCreate with mshta and remote/script indicator"
+  fail:
+    - "Missing CommandLine"
+    - "No remote/script indicator"
+
+review_cycle_days: 30
+owner: Gustavo Okamoto
+EOF
