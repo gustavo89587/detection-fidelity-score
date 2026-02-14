@@ -1,0 +1,61 @@
+dfs_version: "0.1"
+
+detection:
+  id: "WIN-PS-ENC-DL-001"
+  name: "PowerShell EncodedCommand + Download"
+  platform: "windows"
+  hypothesis: >
+    Execução ofuscada via PowerShell (-enc) combinada com primitives de download indica estágio de payload.
+  telemetry_required:
+    - source: "Sysmon"
+      event_ids: [1]
+      fields: ["Image","CommandLine","ParentImage","User"]
+    - source: "Security"
+      event_ids: [4688]
+      fields: ["NewProcessName","CommandLine","SubjectUserName"]
+
+trust_decision_boundary:
+  decision: "Triagem humana (não bloquear)."
+  tier: "Tier3_ContextualOnly"
+  why: "Sinal forte, mas sujeito a FP em automações corporativas e truncamento de CommandLine."
+
+degradation_profile:
+  loss:
+    exposure: "medium"
+    causes:
+      - "Process Creation logging ausente"
+      - "Sysmon desabilitado"
+    canaries:
+      - "volume de EventID 1/4688"
+  distortion:
+    exposure: "high"
+    causes:
+      - "CommandLine truncada/redigida pelo SIEM/EDR"
+      - "normalização remove flags"
+    checks:
+      - "null-rate de CommandLine"
+  drift:
+    exposure: "high"
+    causes:
+      - "atacante troca IWR por bitsadmin/certutil/mshta"
+      - "split strings/obfuscação"
+    strategy:
+      - "expandir para família de download primitives em detecções irmãs"
+
+fidelity_scoring:
+  coverage: 3
+  noise: 3
+  analyst_cost: 2
+  confidence: "Boa para hunting/triagem, não para resposta automática."
+
+false_positives:
+  expected:
+    - "scripts internos com -enc"
+    - "ferramentas de gestão"
+  mitigations:
+    - "allowlist por ParentImage conhecido"
+    - "exigir destino externo raro (fase 2)"
+
+revalidation:
+  cadence_days: 30
+  triggers: ["parser_change","agent_upgrade","policy_change","incident"]
