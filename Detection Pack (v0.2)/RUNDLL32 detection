@@ -1,0 +1,33 @@
+cat > "Detection Pack (v0.2)/DFS-RUNDLL32-UNTRUSTED-001/detection.yml" <<'EOF'
+title: rundll32 Loading DLL from Untrusted Path
+id: DFS-RUNDLL32-UNTRUSTED-001
+status: test
+description: Detects rundll32.exe loading DLLs from user-writable paths.
+author: Gustavo Okamoto
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains: '.dll'
+
+  untrusted_path:
+    CommandLine|contains:
+      - '\Users\'
+      - '\AppData\'
+      - '\Temp\'
+      - '\Downloads\'
+
+  condition: selection and untrusted_path
+
+falsepositives:
+  - Rare legacy software behavior
+
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1218.011
+EOF
