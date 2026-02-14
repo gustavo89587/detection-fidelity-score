@@ -1,0 +1,30 @@
+title: PowerShell EncodedCommand With Download Behavior
+id: WIN-PS-ENC-DL-001
+status: experimental
+description: Detects PowerShell encoded command usage combined with download primitives.
+author: Gustavo Okamoto
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  ps_encoded:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains:
+      - ' -enc '
+      - ' -encodedcommand '
+  download:
+    CommandLine|contains:
+      - 'Invoke-WebRequest'
+      - 'iwr '
+      - 'curl '
+      - 'wget '
+  condition: ps_encoded and download
+
+falsepositives:
+  - Admin automation scripts that use encoded payloads
+  - Software deployment and management tools
+level: medium
+tags:
+  - attack.execution
+  - attack.t1059.001
