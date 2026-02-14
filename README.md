@@ -157,3 +157,7 @@ DFS is designed for long-term structural clarity, not trend cycles.
 
 Trust must not be assumed.
 It must be engineered.
+
+standards/Detection_Design_Standard_v1.md
+
+Detection Pack (v0.1)/
