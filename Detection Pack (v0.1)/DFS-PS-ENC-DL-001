@@ -1,0 +1,6 @@
+## Reference Detection (DDS-compliant)
+**DFS-PS-ENC-DL-001 — Suspicious PowerShell Encoded Command with Download Primitive**
+
+- Rule: `detection.yml`
+- DFS: `dfs.yml`
+- Tests: `tests/atomic.md`, `tests/expected.md`, `tests/validation.md`
