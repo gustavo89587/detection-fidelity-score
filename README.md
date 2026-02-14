@@ -22,219 +22,134 @@ Detection Signal
  Human │ Automated │ Contextual
 
 
-Detection trust is not binary. It degrades.
-DFS makes that degradation explicit, measurable, and governable.
+Detection Fidelity Score (DFS)
 
-Executive Summary
+Engineering detection as a decision system — not an alert generator.
 
-Detection systems and automated responses increasingly make high-impact decisions:
+The Problem
 
-Account lockouts
+Modern detection engineering often prioritizes:
 
-Endpoint isolation
+Coverage over clarity
 
-Token revocation
+Alerts over decisions
 
-Privilege removal
+Tool logic over behavioral modeling
 
-AI-assisted triage
+Automation before governance
 
-Yet most organizations cannot clearly explain:
+This leads to:
 
-Why a signal is trusted
+Analyst fatigue
 
-When automation is justified
+Inflated detection catalogs
 
-What degradation invalidates trust
+Poor signal integrity
 
-Who revalidates assumptions over time
+Fragile rules that degrade silently
 
-DFS is a structured model for designing, validating, and governing trust in automated security decision systems.
+DFS proposes a different approach.
 
-It transforms implicit confidence into explicit trust boundaries.
+Core Concept: Fidelity-Centric Detection
 
-Why This Matters Now
+Detection is not an event.
+Detection is a decision boundary.
 
-Security systems are becoming:
+Every detection must explicitly define:
 
-More automated
+What behavior is being modeled
 
-More AI-assisted
+What operational decision it enables
 
-More abstracted
+How the signal degrades over time
 
-More dependent on complex telemetry pipelines
+What risks exist in telemetry reliability
 
-At the same time:
+Trust Decision Boundary
 
-Telemetry silently degrades
+Each detection declares:
 
-Schemas evolve
+What action it authorizes (alert / escalate / block / observe)
 
-Privacy controls alter signal semantics
+Required confidence level
 
-Risk engines become probabilistic inputs to deterministic automation
+Operational tier
 
-Without explicit degradation modeling, automation scales both confidence and error.
+Without an explicit boundary, the rule is incomplete.
 
-DFS exists to ensure automation scales responsibly.
+Degradation Model
 
-The Core Model
+All detections degrade.
 
-DFS models degradation across three domains:
+DFS models degradation in three dimensions:
 
 Loss
 
-Signal missing, delayed, or incomplete.
+Signal disappears due to missing telemetry.
 
 Distortion
 
-Signal survives but semantic meaning changes.
+Signal changes semantically (e.g., truncation, normalization).
 
 Drift
 
-Assumptions decay over time as systems and behaviors evolve.
+Adversary behavior evolves to bypass logic.
 
-These domains define explicit Trust Decision Boundaries.
+Detections are reviewed as dynamic systems — not static rules.
 
-If degradation is unbounded, automation eligibility must be restricted.
+Detection Design Standard (DDS)
 
-→ See: docs/core-model.md
+All detections must comply with the formal design standard:
 
-Automation Governance Model
+See: standards/Detection_Design_Standard_v1.md
 
-DFS introduces governance tiers for automated actions:
+This defines:
 
-Tier 1 — Eligible for Automation
+Hypothesis format
 
-Tier 2 — Human-Assisted Automation
+Telemetry requirements
 
-Tier 3 — Contextual Only
+Detection logic structure
 
-Automation is not a capability decision.
-It is a trust decision.
+False positive surface modeling
 
-→ See: docs/automation-governance-model.md
+Drift modeling
 
-Testing & Validation
+Trust boundary declaration
 
-Degradation must be continuously tested.
+Validation protocol
 
-DFS defines validation strategies for:
+Governance metadata
 
-Telemetry completeness (Loss)
+Detection Packs
 
-Schema and semantic stability (Distortion)
+Structured detection implementations can be found in:
 
-Assumption revalidation (Drift)
+Detection Pack (v0.1)
 
-Trust decays unless actively maintained.
+Each pack:
 
-→ See: docs/core-model.md (Domain Testing Strategies)
+Follows DDS
 
-Applied Examples
+Declares Trust Decision Boundary
 
-DFS includes structured real-world scenarios across:
+Includes degradation profile
 
-IAM automation
+Defines validation protocol
 
-MFA fatigue detection
+Future versions will enforce strict PASS/FAIL fidelity gates.
 
-OAuth abuse
+Objective
 
-Impossible travel
+Build detection engineering as:
 
-EDR auto-isolation
+A decision architecture
 
-Incident-based drift analysis
+A signal integrity discipline
 
-Each example models:
+A governed operational system
 
-Degradation profile
-
-Trust boundary
-
-Governance tier
-
-Validation requirements
-
-→ See: examples/
-
-How to Apply DFS in 30 Minutes
-
-Select one automated detection or response.
-
-Model its Loss, Distortion, and Drift exposure.
-
-Declare the Trust Decision Boundary explicitly.
-
-Assign a Governance Tier.
-
-Define revalidation triggers.
-
-Document assumptions.
-
-If you cannot explain when automation becomes unsafe, trust is implicit.
-
-DFS makes it explicit.
-
-Executive Interpretation
-
-DFS helps security leaders answer:
-
-Where are we over-trusting automation?
-
-Which detections are unsafe to auto-respond?
-
-Where does telemetry loss create blind spots?
-
-Which alerts truly require human judgment?
-
-What decision risk are we carrying invisibly?
-
-DFS does not replace tooling.
-It governs how tooling is trusted.
-
-What DFS Is
-
-An engineering model for detection trust
-
-A governance framework for automation eligibility
-
-A shared language between engineers and leadership
-
-A method to make detection debt visible
-
-What DFS Is Not
-
-A SIEM product
-
-A tuning methodology
-
-A scoring gimmick
-
-A replacement for human judgment
-
-DFS clarifies when human judgment is required.
-
-Roadmap
-
-Future development areas include:
-
-Quantitative fidelity modeling
-
-SOC maturity-aligned governance thresholds
-
-MITRE ATT&CK alignment
-
-CI-based trust regression
-
-AI-agent autonomy constraints
-
-DFS evolves deliberately and versioned.
-
-→ See: docs/evolution-and-versioning.md
-
+Not just a collection of rules.
 Attribution
 
 Detection Fidelity Score (DFS)
