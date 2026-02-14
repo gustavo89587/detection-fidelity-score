@@ -1,61 +1,70 @@
-dfs_version: "0.1"
+dfs_version: "1.0"
 
-detection:
-  id: "WIN-PS-ENC-DL-001"
-  name: "PowerShell EncodedCommand + Download"
-  platform: "windows"
-  hypothesis: >
-    Execução ofuscada via PowerShell (-enc) combinada com primitives de download indica estágio de payload.
-  telemetry_required:
-    - source: "Sysmon"
-      event_ids: [1]
-      fields: ["Image","CommandLine","ParentImage","User"]
-    - source: "Security"
-      event_ids: [4688]
-      fields: ["NewProcessName","CommandLine","SubjectUserName"]
+detection_id: "DFS-PS-ENC-DL-001"
+
+hypothesis: >
+  An adversary executes PowerShell using encoded commands to obfuscate payload
+  delivery and initiates network retrieval to stage second-phase execution.
+
+telemetry_requirements:
+  required:
+    - source: Sysmon
+      event_id: 1
+      fields:
+        - Image
+        - CommandLine
+        - ParentImage
+        - User
+        - IntegrityLevel
+    - source: Security
+      event_id: 4688
+      fields:
+        - NewProcessName
+        - CommandLine
+        - SubjectUserName
 
 trust_decision_boundary:
-  decision: "Triagem humana (não bloquear)."
-  tier: "Tier3_ContextualOnly"
-  why: "Sinal forte, mas sujeito a FP em automações corporativas e truncamento de CommandLine."
+  decision: "Escalate to analyst triage"
+  tier: "T2"
+  automated_response: false
+  rationale: >
+    Behavior indicates payload staging but is prone to legitimate automation use.
 
 degradation_profile:
   loss:
-    exposure: "medium"
-    causes:
-      - "Process Creation logging ausente"
-      - "Sysmon desabilitado"
-    canaries:
-      - "volume de EventID 1/4688"
+    risk: medium
+    cause:
+      - Process creation logging disabled
+      - CommandLine logging disabled
   distortion:
-    exposure: "high"
-    causes:
-      - "CommandLine truncada/redigida pelo SIEM/EDR"
-      - "normalização remove flags"
-    checks:
-      - "null-rate de CommandLine"
+    risk: high
+    cause:
+      - CommandLine truncation
+      - EDR normalization
   drift:
-    exposure: "high"
-    causes:
-      - "atacante troca IWR por bitsadmin/certutil/mshta"
-      - "split strings/obfuscação"
-    strategy:
-      - "expandir para família de download primitives em detecções irmãs"
+    risk: high
+    evolution_paths:
+      - Replace IWR with certutil
+      - Replace PowerShell with mshta
+      - Split encoded payload across variables
 
-fidelity_scoring:
-  coverage: 3
-  noise: 3
-  analyst_cost: 2
-  confidence: "Boa para hunting/triagem, não para resposta automática."
+false_positive_surface:
+  scenarios:
+    - IT automation scripts
+    - Software deployment systems
+  mitigation:
+    - Restrict to user-context executions
+    - Require external network indicators in phase 2
 
-false_positives:
-  expected:
-    - "scripts internos com -enc"
-    - "ferramentas de gestão"
-  mitigations:
-    - "allowlist por ParentImage conhecido"
-    - "exigir destino externo raro (fase 2)"
+validation_protocol:
+  pass:
+    - EventID 1 or 4688 generated
+    - CommandLine contains encoded flag
+    - CommandLine contains download primitive
+  fail:
+    - Missing CommandLine field
+    - Encoded command without network primitive
+    - Variation using alternative LOLBins not detected
 
-revalidation:
-  cadence_days: 30
-  triggers: ["parser_change","agent_upgrade","policy_change","incident"]
+review_cycle_days: 30
+owner: Gustavo Okamoto
