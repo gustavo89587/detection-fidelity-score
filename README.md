@@ -22,8 +22,6 @@ Detection Signal
  Human │ Automated │ Contextual
 
 
-Detection Fidelity Score (DFS)
-
 Engineering detection as a decision system — not an alert generator.
 
 The Problem
