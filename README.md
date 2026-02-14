@@ -1,7 +1,13 @@
-Detection Fidelity Score (DFS)
+# Detection Fidelity Score (DFS)
 
 DFS (Detection Fidelity Score) treats detections as decision systems, not alert generators.
-Each rule must declare its Trust Decision Boundary (what action it authorizes), and quantify how the signal degrades across Loss (missing telemetry), Distortion (semantic corruption such as truncation/normalization), and Drift (adversary evolution).
+
+Each rule must declare its Trust Decision Boundary (what action it authorizes), and quantify how the signal degrades across:
+
+- **Loss** (missing telemetry)
+- **Distortion** (semantic corruption such as truncation/normalization)
+- **Drift** (adversary evolution)
+
 The goal is to ship detections that remain operationally reliable over time, with explicit validation gates and governance tiers — rather than maximizing coverage at the expense of analyst trust.
 
 
@@ -29,7 +35,7 @@ Detection Signal
 
 Engineering detection as a decision system — not an alert generator.
 
-The Problem
+##The Problem
 
 Modern detection engineering often prioritizes:
 
