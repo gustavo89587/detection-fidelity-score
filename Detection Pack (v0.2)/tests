@@ -1,0 +1,24 @@
+cat > "Detection Pack (v0.2)/DFS-MSHTA-REMOTE-001/tests/atomic.md" <<'EOF'
+Objective: Generate mshta process execution with remote/script indicator.
+EOF
+
+cat > "Detection Pack (v0.2)/DFS-MSHTA-REMOTE-001/tests/expected.md" <<'EOF'
+Expected:
+- Image endswith \mshta.exe
+- CommandLine contains remote/script indicator
+EOF
+
+cat > "Detection Pack (v0.2)/DFS-MSHTA-REMOTE-001/tests/validation.md" <<'EOF'
+PASS:
+- mshta process observed with remote/script indicator
+
+FAIL:
+- No process event (Loss)
+- Missing CommandLine (Distortion)
+- Execution shifts to sibling LOLBin (Drift)
+EOF
+
+cat > "Detection Pack (v0.2)/DFS-MSHTA-REMOTE-001/notes.md" <<'EOF'
+Tuning:
+- Correlate with unusual parent process (Office, browser).
+EOF
