@@ -1,4 +1,4 @@
-Endpoint Auto-Isolation Based on Behavioral Detection
+#H1 Endpoint Auto-Isolation Based on Behavioral Detection H1#
 Context
 
 Detection Name: behavioral_ransomware_pattern
