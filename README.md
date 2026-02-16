@@ -51,10 +51,55 @@ DFS is not a detection rule set.
 
 It is a way to think about signal trust, decision confidence, and detection survivability in real environments.
 
+While DFS is primarily a design and governance discipline, it also introduces a lightweight quantitative model to assess detection survivability under degradation conditions.
 
 ## 🎯 Why DFS exists
+
+While DFS is primarily a design and governance discipline, it also introduces a lightweight quantitative model to assess detection survivability under degradation conditions.
+
+## Quantitative Model (DFS v1.0)
+
+DFS introduces a minimal scoring structure to evaluate detection survivability across degradation domains.
+
+DFS Score = f(Loss, Distortion, Drift, Confidence Boundary)
+
+The model does not replace engineering judgment.
+It structures it.
+
+Each detection can be evaluated across:
+
+- Telemetry dependency exposure
+- Degradation sensitivity
+- Decision boundary clarity
+- Analyst cost amplification
+
+
 Most detections fail not because they are wrong,
-but because they are noisy, fragile, or hard to trust.
+but because they are noisy, fragile, or hard to trust. 
+
+Quantitative Model (DFS v1.0)
+
+Even though DFS is primarily a decision discipline, it also introduces a measurable score to quantify detection survivability under degradation conditions.
+
+Let:
+
+S = Detections surviving intact
+D = Detections degraded but operational
+B = Detections broken
+T = Total detections evaluated
+
+DFS Score:
+
+DFS = (S + 0.5D) / T
+
+Interpretation:
+
+1.0 → No operational degradation
+0.8–0.99 → Minor degradation
+0.5–0.79 → Operational degradation
+<0.5 → High operational risk
+
+DFS allows teams to compare detection reliability before and after telemetry changes, privacy controls, or architectural shifts.
 
 ## What DFS is becoming
 
