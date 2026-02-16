@@ -200,7 +200,78 @@ How the signal degrades over time
 
 What risks exist in telemetry reliability
 
-Trust Decision Boundary
+Trust Decision Boundary 
+
+---
+
+## 🔬 Practical Example – Windows 4688 Detection
+
+To illustrate how DFS works in practice, below is a simplified applied example.
+
+### Detection Hypothesis
+
+Suspicious parent-child process chain indicating execution staging.
+
+Example:
+winword.exe → powershell.exe → encoded command
+
+### Trust Decision Boundary
+
+Action: Escalate to Tier 2 Analyst  
+Confidence Required: ≥ 0.75  
+Operational Tier: High Impact
+
+---
+
+### Degradation Analysis
+
+| Domain      | Risk Level | Impact Description |
+|-------------|-----------|-------------------|
+| Loss        | High      | Missing command-line logging removes execution context |
+| Distortion  | Medium    | Truncation alters semantic interpretation |
+| Drift       | High      | Adversary shifts to LOLBins or indirect execution |
+
+---
+
+### Analyst Cost Estimation
+
+- Context Required: Process tree + command line
+- Average Triage Time: 6–12 minutes
+- False Positive Surface: Medium
+
+---
+
+### Example DFS Score (Illustrative Model)
+
+DFS = Signal Strength × Telemetry Stability × Behavioral Robustness
+
+Where:
+
+- Signal Strength (0–1)
+- Telemetry Stability (0–1)
+- Behavioral Robustness (0–1)
+
+Example Evaluation:
+
+Signal Strength: 0.82  
+Telemetry Stability: 0.60  
+Behavioral Robustness: 0.75  
+
+DFS Score = 0.82 × 0.60 × 0.75 = **0.369**
+
+Interpretation:
+
+< 0.40 → Fragile  
+0.40 – 0.70 → Operational  
+> 0.70 → High Trust
+
+This detection would require telemetry hardening before automation.
+
+---
+
+DFS is not theoretical.  
+It forces detections to declare survivability under stress.
+
 
 Each detection declares:
 
