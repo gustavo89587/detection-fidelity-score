@@ -1,4 +1,4 @@
-Domain Testing Strategies
+####Domain Testing Strategies
 
 Formal definitions are insufficient without verification.
 
@@ -10,7 +10,7 @@ Testing for Loss
 
 Loss testing validates that required telemetry remains present, complete, and timely.
 
-Objectives
+## Objectives
 
 Detect missing events
 
@@ -20,7 +20,7 @@ Validate field completeness
 
 Surface silent pipeline drops
 
-Engineering Strategies
+# Engineering Strategies
 1. Canary Telemetry
 
 Inject synthetic, controlled signals into the telemetry pipeline at defined intervals.
@@ -33,7 +33,7 @@ Alert if expected events disappear
 
 Canaries convert silent Loss into observable failure.
 
-2. Telemetry Coverage Audits
+# 2. Telemetry Coverage Audits
 
 Continuously measure:
 
@@ -45,7 +45,7 @@ Ingestion latency thresholds
 
 Loss is often gradual before it becomes catastrophic.
 
-3. Negative Trust Validation
+# 3. Negative Trust Validation
 
 Explicitly test:
 
@@ -55,7 +55,7 @@ Under what Loss conditions does silence become meaningless?
 
 Absence must be engineered — not inferred.
 
-Failure Signal
+### Failure Signal
 
 If absence cannot be trusted, automation based on silence must be restricted or eliminated.
 
@@ -63,7 +63,7 @@ Testing for Distortion
 
 Distortion testing validates that signal semantics remain stable under transformation.
 
-Objectives
+# Objectives
 
 Detect schema alterations
 
@@ -73,7 +73,7 @@ Validate redaction impact
 
 Surface encoding inconsistencies
 
-Engineering Strategies
+## Engineering Strategies
 1. Schema Validation Contracts
 
 Enforce explicit schema version checks
@@ -84,7 +84,7 @@ Validate transformation assumptions
 
 Detection logic must not rely on implicit parsing behavior.
 
-2. Semantic Regression Testing
+## 2. Semantic Regression Testing
 
 Replay known malicious samples and validate:
 
@@ -96,23 +96,23 @@ Enrichment consistency
 
 If replayed behavior produces different interpretation, semantic degradation is occurring.
 
-3. Redaction Impact Simulation
+## 3. Redaction Impact Simulation
 
 Model privacy-driven transformations and measure detection behavior before and after transformation.
 
 Privacy constraints are design inputs — not afterthoughts.
 
-Failure Signal
+## Failure Signal
 
 If detection meaning changes without intentional logic modification, Distortion is active.
 
 Automation and trust boundaries must be revalidated.
 
-Testing for Drift
+## Testing for Drift
 
 Drift testing validates detection assumptions across time and environmental change.
 
-Objectives
+# Objectives
 
 Identify assumption decay
 
@@ -120,7 +120,7 @@ Detect adversary technique evolution
 
 Validate environmental invariants
 
-Engineering Strategies
+## Engineering Strategies
 1. Periodic Assumption Review
 
 Explicitly document:
@@ -137,11 +137,11 @@ Revalidate on a scheduled cadence.
 
 If assumptions are undocumented, Drift cannot be detected.
 
-2. Behavioral Coverage Reassessment
+# 2. Behavioral Coverage Reassessment
 
 Map detection logic to adversary behaviors or technique classes.
 
-Evaluate:
+# Evaluate:
 
 Is the behavior still relevant?
 
@@ -151,7 +151,7 @@ Does telemetry still express the behavior clearly?
 
 Relevance is temporal.
 
-3. Change-Triggered Revalidation
+# 3. Change-Triggered Revalidation
 
 The following events must trigger Drift review:
 
@@ -165,7 +165,7 @@ Infrastructure redesign
 
 Change without revalidation accelerates Drift.
 
-Failure Signal
+## Failure Signal
 
 If a detection appears operational but no longer reflects current adversary behavior or environmental assumptions, Drift is active.
 
@@ -185,15 +185,15 @@ Testing must assume interaction, not isolation.
 
 DFS evaluates degradation as bounded trust erosion — not binary failure.
 
-Operationalizing Trust
+## Operationalizing Trust
 
 DFS testing does not eliminate degradation.
 
 It ensures degradation is:
 
-Observable
+# Observable
 
-Bounded
+# Bounded
 
 Explicitly accepted or mitigated
 
