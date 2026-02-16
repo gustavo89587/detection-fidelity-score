@@ -2,6 +2,12 @@
 
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue) ![Status](https://img.shields.io/badge/status-active%20development-green) ![Version](https://img.shields.io/badge/version-v0.1-informational) ![Author](https://img.shields.io/badge/author-Gustavo%20Okamoto-black) ![Focus](https://img.shields.io/badge/focus-detection%20engineering-purple)
 
+![Status](https://img.shields.io/badge/status-active_research-blue)
+![Discipline](https://img.shields.io/badge/focus-detection_engineering-critical)
+![Model](https://img.shields.io/badge/model-decision_systems-informational)
+![License](https://img.shields.io/badge/license-Apache_2.0-green)
+
+
 > Detection is not about finding activity.  
 > It's about making trustworthy decisions under uncertainty.
 
@@ -468,6 +474,25 @@ The notebook includes:
 - Visualization of signal survivability
 
 This model is intentionally lightweight and meant for research and experimentation.
+
+## 🗺️ Roadmap
+
+### v1.1
+- Formal DFS scoring calibration model
+- Telemetry stability scoring guidelines
+- Drift simulation reference scenarios
+- SOC cost modeling framework
+
+### v1.2
+- Reference degraded detection dataset
+- PASS/FAIL fidelity gates
+- Governance review workflow
+
+### Long-term
+- Detection survivability benchmark
+- Cross-environment fidelity validation
+- Public detection pack library
+
 
 
 Attribution
