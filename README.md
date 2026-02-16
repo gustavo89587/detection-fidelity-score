@@ -1,6 +1,13 @@
-# Detection Fidelity Score (DFS)
+# 🧠 Detection Fidelity Score (DFS)
 
-DFS (Detection Fidelity Score) treats detections as decision systems, not alert generators.
+A practical framework to measure signal quality, noise overlap, and operational trust in detection engineering.
+
+---
+
+## 🎯 Why DFS exists
+Most detections fail not because they are wrong,
+but because they are noisy, fragile, or hard to trust.
+
 
 Each rule must declare its Trust Decision Boundary (what action it authorizes), and quantify how the signal degrades across:
 
