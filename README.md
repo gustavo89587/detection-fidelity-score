@@ -343,7 +343,68 @@ Includes degradation profile
 
 Defines validation protocol
 
-Future versions will enforce strict PASS/FAIL fidelity gates.
+Future versions will enforce strict PASS/FAIL fidelity gates.   
+
+---
+
+## 📂 Reference Implementations
+
+DFS includes structured examples demonstrating how detection engineering can be evaluated under the Fidelity model.
+
+### Detection Examples
+
+- [Windows 4688 – Suspicious Process Creation](examples/windows_4688_example.md)
+- [Linux auditd – Suspicious Process Execution](examples/linux_auditd_execution_example.md)
+
+Each example includes:
+
+- Detection hypothesis
+- Trust Decision Boundary declaration
+- Degradation modeling (Loss / Distortion / Drift)
+- Analyst cost profile
+- Survivability scoring
+- Governance metadata
+
+---
+
+## 📐 Quantitative Model
+
+DFS introduces a lightweight scoring layer for measurable survivability analysis.
+
+See:
+
+- [DFS Scoring Model v1.0](standards/dfs_scoring_model_v1.md)
+
+The scoring model formalizes detection reliability across:
+
+- Signal Strength
+- Telemetry Stability
+- Behavioral Robustness
+
+DFS = S × T × B
+
+This enables:
+
+- Pre-production validation
+- Automation gating decisions
+- Detection lifecycle review
+- Telemetry impact analysis
+
+---
+
+## 🧪 Experimental Notebook
+
+A minimal reproducible scoring simulation is available for reference:
+
+- `dfs_scoring_notebook.ipynb`
+
+This notebook demonstrates:
+
+- Comparative scoring across detections
+- Degradation curves
+- Trust band interpretation
+- Visualization of survivability impact
+
 
 Objective
 
