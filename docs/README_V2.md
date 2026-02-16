@@ -1,5 +1,5 @@
-Detection Fidelity Score (DFS)
-A framework for engineering trust in detection systems
+### Detection Fidelity Score (DFS)
+## A framework for engineering trust in detection systems
 
 Detection Fidelity Score (DFS) is a framework for reasoning about how detections behave under real-world constraints.
 
@@ -15,7 +15,7 @@ an architecture of trust (when a signal warrants human escalation or automated a
 
 DFS is intentionally not a product, a SIEM feature, or a prescriptive scorecard.
 
-The DFS core model
+## The DFS core model
 
 DFS models degradation across three failure domains:
 
@@ -27,13 +27,13 @@ Drift — the signal breaks as assumptions decay over time
 
 Together, these domains define explicit trust boundaries in detection systems.
 
-→ Full model: docs/core-model.md
+# → Full model: docs/core-model.md
 
 What DFS produces
 
 DFS does not produce a single magic number.
 
-It produces:
+# It produces:
 
 A degradation profile across Loss, Distortion, and Drift
 
@@ -47,7 +47,7 @@ This helps teams surface detection debt before it becomes alert fatigue, blind s
 
 What DFS is (and is not)
 
-DFS is:
+### DFS is:
 
 A conceptual + technical framework
 
@@ -55,7 +55,7 @@ A shared language between detection engineers, SOC analysts, and leadership
 
 A way to make implicit trust decisions explicit
 
-DFS is not:
+### DFS is not:
 
 A SIEM replacement
 
@@ -65,7 +65,7 @@ A metric for analyst performance
 
 DFS evaluates detection trustworthiness under degradation — not SOC effectiveness, which depends on staffing, process, and response design.
 
-Example: one detection, three failure domains
+# Example: one detection, three failure domains
 
 Detection: Suspicious PowerShell execution with encoded commands
 
@@ -78,7 +78,7 @@ Command line truncated due to field length limits
 Impact: Entire executions disappear from detection scope
 Trust outcome: ❌ You cannot trust the absence of alerts
 
-Distortion
+## Distortion
 
 Base64 content partially redacted for privacy
 
@@ -87,7 +87,7 @@ Normalization alters pattern matching
 Impact: Inconsistent matches + reduced context
 Trust outcome: ⚠️ Alerts demand higher analyst effort to interpret
 
-Drift
+### Drift
 
 Agent update changes field naming
 
@@ -96,7 +96,7 @@ Detection relies on implicit default parsing/normalization behavior
 Impact: Detection silently stops matching
 Trust outcome: ❌ Trust decays over time without visibility
 
-DFS interpretation
+### DFS interpretation
 
 This detection isn’t “bad” — its trustworthiness is conditional:
 
@@ -112,7 +112,7 @@ First technical artifact: DFS result contract (MVP)
 
 DFS starts with a shared result contract, not code.
 
-DFS result (conceptual schema)
+### DFS result (conceptual schema)
 {
   "detection": "powershell_encoded_command",
   "environment": "endpoint_windows",
@@ -135,7 +135,7 @@ DFS result (conceptual schema)
 }
 
 
-Why this matters:
+# Why this matters:
 
 Forces explicit reasoning
 
@@ -143,13 +143,13 @@ Enables tooling later without locking design early
 
 Keeps trust boundaries visible to humans and automation
 
-Design principle
+## Design principle
 
 Detection systems should degrade predictably and measurably — not silently.
 
 DFS exists to ensure trust in detection is designed, tested, and maintained, not assumed.
 
-Status
+## Status
 
 DFS is currently a framework and methodology, not a finished implementation.
 
