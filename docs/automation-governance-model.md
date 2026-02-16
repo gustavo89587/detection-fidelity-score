@@ -24,13 +24,13 @@
                                               ▼
                                   Trust Boundary Update
 
-##Purpose
+## Purpose
 
-The DFS Automation Governance Model defines how trust boundaries determine when automated security actions are justified.
+### The DFS Automation Governance Model defines how trust boundaries determine when automated security actions are justified.
 
 It provides a structured method to:
 
-Approve automation
+# Approve automation
 
 Restrict unsafe automation
 
@@ -50,7 +50,7 @@ Risk-based access controls
 
 Autonomous remediation workflows
 
-Core Principle
+### Core Principle
 
 Automation is not a capability decision.
 It is a trust decision.
@@ -75,7 +75,7 @@ Analyst cost of delay exceeds automation risk
 
 False-positive impact is operationally acceptable
 
-Examples:
+# Examples:
 
 Token revocation after confirmed credential abuse pattern
 
@@ -103,7 +103,7 @@ Loss cannot fully invalidate silence
 
 Action impact is high
 
-Examples:
+# Examples:
 
 Endpoint isolation suggestion
 
@@ -131,7 +131,7 @@ Drift risk is active or unbounded
 
 False-positive cost exceeds benefit
 
-Examples:
+# Examples:
 
 Encoded PowerShell without supporting signals
 
@@ -177,7 +177,7 @@ Incident post-mortems revealing degradation
 
 Automation trust decays unless actively maintained.
 
-Governance Controls
+### Governance Controls
 
 Organizations adopting DFS governance should implement:
 
@@ -207,7 +207,7 @@ Independent validation signal
 
 AI decision autonomy must never exceed validated fidelity boundaries.
 
-Accountability Model
+## Accountability Model
 
 For every automated decision system, leadership must be able to answer:
 
@@ -221,7 +221,7 @@ What is the blast radius if wrong?
 
 If these questions cannot be answered clearly, governance is incomplete.
 
-Closing Principle
+### Closing Principle
 
 Automation scales impact.
 
