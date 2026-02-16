@@ -442,6 +442,34 @@ A signal integrity discipline
 A governed operational system
 
 Not just a collection of rules.
+
+## DFS Scoring Model
+## 📊 DFS Scoring Model (Experimental)
+
+DFS can be modeled quantitatively using a simple multiplicative trust function:
+
+DFS = Signal Strength × Telemetry Stability × Behavioral Robustness
+
+Where:
+
+- **Signal Strength (S)** → Clarity of behavioral signal
+- **Telemetry Stability (T)** → Resistance to loss/distortion
+- **Behavioral Robustness (B)** → Resistance to drift/adversary adaptation
+
+Example implementation available:
+
+👉 `dfs_scoring_notebook.ipynb`
+
+The notebook includes:
+
+- Sample detection scoring
+- Trust band classification
+- Degradation curve simulation under telemetry distortion
+- Visualization of signal survivability
+
+This model is intentionally lightweight and meant for research and experimentation.
+
+
 Attribution
 ## Author intent
 
