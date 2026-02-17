@@ -187,7 +187,6 @@ def ps4104_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSInputs, Dict[s
     # For explain_score penalties keys:
     # we reuse has_command_line as "has_scriptblock_text" conceptually.
     flags = {
-        "has_command_line": ctx.has_scriptblock,   # reusing existing penalty slot
         "has_parent_process": True,                # N/A for 4104
         "has_user": ctx.has_user,
         "has_host": ctx.has_host,
