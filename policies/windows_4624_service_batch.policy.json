@@ -1,0 +1,16 @@
+{
+  "name": "windows-4624-service-batch",
+  "weights": { "s": 0.35, "t": 0.45, "b": 0.20 },
+  "penalties": {
+    "missing_command_line": 0.30,
+    "missing_parent": 0.20,
+    "missing_user": 0.10,
+    "missing_host": 0.00,
+    "missing_process_path": 0.05
+  },
+  "thresholds": {
+    "investigate_max": 0.60,
+    "escalate_max": 0.80,
+    "automate_hard_min": 0.95
+  }
+}
