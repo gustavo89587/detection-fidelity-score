@@ -1,3 +1,6 @@
+import dfs_core
+print("dfs_core loaded from:", dfs_core.__file__)
+
 from dfs_core import DFSModel
 from dfs_core.scoring import DFSInputs
 
