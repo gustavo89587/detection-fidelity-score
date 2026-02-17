@@ -59,6 +59,33 @@ It is a way to think about signal trust, decision confidence, and detection surv
 
 While DFS is primarily a design and governance discipline, it also introduces a lightweight quantitative model to assess detection survivability under degradation conditions.
 
+## Who DFS Serves
+
+### For Detection Engineers
+
+DFS provides a structured way to:
+
+- Design detections as decision systems
+- Model degradation before production
+- Quantify telemetry dependency risk
+- Justify automation thresholds
+- Reduce analyst cognitive load
+
+It shifts detection from rule-writing to survivability engineering.
+
+### For Security Leaders
+
+DFS enables:
+
+- Measurable detection reliability discussions
+- Explicit trust boundary governance
+- Telemetry investment prioritization
+- Detection lifecycle oversight
+- Automation risk calibration
+
+It transforms alert quality from intuition to structured evaluation.
+
+
 ## 🎯 Why DFS exists
 
 While DFS is primarily a design and governance discipline, it also introduces a lightweight quantitative model to assess detection survivability under degradation conditions.
