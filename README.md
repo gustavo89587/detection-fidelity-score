@@ -53,6 +53,10 @@ DFS makes that visible:
 
 ### Quick start (CLI)
 ```bash
+
+## Documentation
+- [DFS Whitepaper](docs/dfs_whitepaper.md)
+
 py dfs_cli.py score examples/events_4104.jsonl --kind windows-powershell-4104 --policy policies/powershell_4104.policy.json
 
 
