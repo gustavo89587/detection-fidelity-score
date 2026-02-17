@@ -126,3 +126,18 @@ def win4688_to_dfs_inputs(event: Dict[str, Any]) -> DFSInputs:
 
     # Clamp S/T/B into DFSInputs constructor validation
     return DFSInputs(float(s), float(t), float(b))
+
+   def win4688_context_flags(event: dict) -> dict:
+    ctx = extract_win4688_context(event)
+    return {
+        "has_command_line": ctx.has_command_line,
+        "has_parent_process": ctx.has_parent_process,
+        "has_user": ctx.has_user,
+        "has_process_path": ctx.has_process_path,
+        "has_host": ctx.has_host,
+    }
+
+
+def win4688_to_inputs_and_flags(event: dict):
+    return win4688_to_dfs_inputs(event), win4688_context_flags(event)
+
