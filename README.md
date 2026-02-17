@@ -8,6 +8,7 @@ Focus: Detection Survivability Infrastructure Layer
 
 Engineering detection as survivable decision systems under telemetry uncertainty.
 
+![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
 
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue) ![Status](https://img.shields.io/badge/status-active%20development-green) ![Version](https://img.shields.io/badge/version-v0.1-informational) ![Author](https://img.shields.io/badge/author-Gustavo%20Okamoto-black) ![Focus](https://img.shields.io/badge/focus-detection%20engineering-purple)
 
