@@ -65,51 +65,78 @@ def apply_penalties(base_score: float, penalties: List[Tuple[str, float]]) -> fl
         score *= (1.0 - p)
     return max(0.0, min(1.0, float(score)))
 
+from dataclasses import dataclass
+from typing import Dict, List
+
+from dfs_core.scoring import DFSInputs
+
+
+@dataclass
+class Explanation:
+    base_score: float
+    penalties_applied: Dict[str, float]
+    final_score: float
+    notes: List[str]
+
 
 def explain_score(
     inputs: DFSInputs,
-    context_flags: Dict[str, bool],
-    weights: DFSWeights | None = None,
-    penalties: DFSPenalties | None = None,
-) -> DFSExplanation:
+    flags: Dict[str, bool],
+    *,
+    weights: Dict[str, float],
+    penalties: Dict[str, float],
+) -> Explanation:
     """
-    context_flags keys (expected):
-      has_command_line, has_parent_process, has_user, has_host, has_process_path
+    Generic DFS explainable scoring.
+
+    penalties = {
+        "missing_scriptblock": 0.35,
+        "missing_source_ip": 0.30,
+        ...
+    }
+
+    flags = {
+        "has_scriptblock": True,
+        "has_source_ip": False,
+        ...
+    }
+
+    If penalty key = "missing_X"
+    it will check flag "has_X"
     """
-    w = weights or DFSWeights()
-    p = penalties or DFSPenalties()
 
-    base = weighted_base_score(inputs, w)
+    # base score
+    base = (
+        inputs.s * weights["s"]
+        + inputs.t * weights["t"]
+        + inputs.b * weights["b"]
+    )
 
-    applied: List[Tuple[str, float]] = []
-    notes: List[str] = []
+    total_penalty = 0.0
+    applied = {}
+    notes = []
 
-    if not context_flags.get("has_command_line", False):
-        applied.append(("missing_command_line", p.missing_command_line))
-        notes.append("No command-line → intent visibility collapses (high decision risk).")
+    for pen_key, pen_value in penalties.items():
+        if not pen_key.startswith("missing_"):
+            continue
 
-    if not context_flags.get("has_parent_process", False):
-        applied.append(("missing_parent", p.missing_parent))
-        notes.append("No parent process → causality/chain-of-execution weakens.")
+        field = pen_key.replace("missing_", "")
+        flag_name = f"has_{field}"
 
-    if not context_flags.get("has_user", False):
-        applied.append(("missing_user", p.missing_user))
-        notes.append("No user context → accountability/baseline correlation degrades.")
+        present = flags.get(flag_name, True)
 
-    if not context_flags.get("has_host", False):
-        applied.append(("missing_host", p.missing_host))
-        notes.append("No host identifier → scoping & response mapping degrade.")
+        if not present:
+            total_penalty += pen_value
+            applied[pen_key] = pen_value
+            notes.append(f"Missing {field} reduces decision confidence")
 
-    if not context_flags.get("has_process_path", False):
-        applied.append(("missing_process_path", p.missing_process_path))
-        notes.append("No process path → harder to distinguish LOLBin vs renamed binary.")
+    final = max(0.0, base - total_penalty)
 
-    final = apply_penalties(base, applied)
-
-    return DFSExplanation(
-        inputs=inputs,
+    return Explanation(
         base_score=base,
         penalties_applied=applied,
         final_score=final,
         notes=notes,
     )
+
+
