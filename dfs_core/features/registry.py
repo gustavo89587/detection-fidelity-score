@@ -5,6 +5,8 @@ from typing import Any, Callable, Dict, Tuple
 
 from dfs_core.scoring import DFSInputs
 
+# extractor signature:
+# event(dict) -> (DFSInputs, flags_dict)
 Extractor = Callable[[Dict[str, Any]], Tuple[DFSInputs, Dict[str, bool]]]
 
 _REGISTRY: Dict[str, Extractor] = {}
