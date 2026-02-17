@@ -14,3 +14,9 @@
     "automate_hard_min": 0.93
   }
 }
+"penalties": {
+  "missing_source_ip": 0.30,
+  "missing_workstation": 0.20,
+  "missing_user": 0.15,
+  "missing_domain": 0.10
+}
