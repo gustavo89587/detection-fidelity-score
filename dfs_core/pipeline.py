@@ -9,8 +9,8 @@ from dfs_core.guardrails import DFSGuardrail
 from dfs_core.policy import DFSPolicy, load_policy
 from dfs_core.decision_card import DecisionCard, build_decision_card
 
-# Feature extractor(s)
-from dfs_core.features.windows_4688 import win4688_to_inputs_and_flags
+# Registry
+from dfs_core.features.registry import get as get_extractor
 
 
 @dataclass(frozen=True)
@@ -23,19 +23,6 @@ class UnknownEventKind(ValueError):
     pass
 
 
-def _extract(kind: str, event: Dict[str, Any]):
-    """
-    Returns: (inputs, flags, normalized_kind)
-    """
-    k = kind.lower().strip()
-
-    if k in ("windows-4688", "win4688", "4688"):
-        inputs, flags = win4688_to_inputs_and_flags(event)
-        return inputs, flags, "windows-4688"
-
-    raise UnknownEventKind(f"Unsupported event kind: {kind}")
-
-
 def evaluate_event(
     event: Dict[str, Any],
     *,
@@ -44,15 +31,31 @@ def evaluate_event(
     event_id: Optional[str] = None,
 ) -> EvaluationResult:
     """
-    Main public API:
-      event(dict) -> DecisionCard (explainable, SOC-safe)
+    Main DFS API
+
+    event(dict) -> DecisionCard
     """
+
+    # Load policy
     policy = load_policy(policy_path)
 
-    inputs, flags, normalized_kind = _extract(kind, event)
+    # Get extractor from registry
+    try:
+        extractor = get_extractor(kind)
+    except KeyError:
+        raise UnknownEventKind(f"Unsupported event kind: {kind}")
 
-    exp = explain_score(inputs, flags, weights=policy.weights, penalties=policy.penalties)
+    inputs, flags = extractor(event)
 
+    # Explainable scoring
+    exp = explain_score(
+        inputs,
+        flags,
+        weights=policy.weights,
+        penalties=policy.penalties
+    )
+
+    # Guardrail decision
     guard = DFSGuardrail(thresholds=policy.thresholds)
     decision = guard.decide(exp.final_score, inputs=inputs)
 
@@ -60,7 +63,7 @@ def evaluate_event(
     user = (event.get("user") or {}).get("name")
 
     card = build_decision_card(
-        event_kind=normalized_kind,
+        event_kind=kind,
         explanation=exp,
         action=decision.action.value,
         rationale=decision.rationale,
