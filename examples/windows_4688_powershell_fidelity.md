@@ -24,7 +24,7 @@ But 4688 only supports a *decision* when the context is present.
 Below is a realistic 4688-style payload (simplified/normalized).
 
 ### 4688 (Full)
-``json
+```json
 {
   "event": {
     "code": 4688,
@@ -56,38 +56,6 @@ Below is a realistic 4688-style payload (simplified/normalized).
   }
 }
 
-My decision thinking (why this supports action)
-
-This one is decision-supporting because:
-
-Intent is visible: -EncodedCommand, hidden window, no profile
-
-Causality exists: WINWORD.EXE → powershell.exe
-
-User context exists: I can assess if jdoe is expected, role, baseline
-
-Operational clarity: I can scope quickly (doc path, parent cmdline)
-
-Even if this is a false positive in some edge environment, I can still make a safe call:
-
-isolate host? maybe
-
-kill process? likely
-
-escalate? yes
-Because the signal carries enough context to justify a decision.
-
-Case B — Degraded Context (Decision-Fragile)
-
-Now the same "powershell started" event, but with realistic loss:
-
-command-line is missing/redacted
-
-parent relationship is missing (or not trustworthy)
-
-key fields are partially suppressed
-
-4688 (Degraded)
 {
   "event": {
     "code": 4688,
@@ -118,68 +86,4 @@ key fields are partially suppressed
   }
 }
 
-My decision thinking (why this is risky)
 
-This is still a correct detection (PowerShell started).
-But it becomes decision-fragile because:
-
-I can’t see intent (encoded? download cradle? benign admin script?)
-
-I can’t see causality (what launched it? doc? explorer? service? scheduler?)
-
-I lose the fastest path to scoping (parent chain + arguments)
-
-automation/agents become dangerous here: they’ll “act confident” while the signal isn’t
-
-So the question becomes:
-
-Do I trust this enough to automate response?
-
-In many environments, the honest answer is no.
-This is where “confidence” becomes a liability.
-
-Where DFS fits (conceptual)
-
-Both cases can fire the same rule:
-
-process.name: powershell.exe (or LOLBin list)
-
-But the decision-supporting quality is not the same.
-
-What I care about operationally is:
-
-Does the signal sustain action?
-
-Does it survive context loss (redaction/partial telemetry)?
-
-That’s what I mean by fidelity.
-
-Practical outcomes (what I would do)
-Full Context
-
-Escalate quickly
-
-Correlate with script block logs (if available), AMSI, network, file writes
-
-Consider containment if the chain looks like phishing → execution
-
-Degraded Context
-
-Do not let automation overreact
-
-Attempt to recover context (EDR telemetry, process tree, Sysmon, PS logs)
-
-Increase evidence requirements before action
-
-Next: turn this into measurable scoring
-
-This doc is intentionally “close to the ground”.
-Next steps to make it measurable:
-
-define required context for decision safety (command-line, parent, user, integrity, network)
-
-quantify survivability under redaction
-
-map missing context → decision risk
-
-That becomes the DFS scoring layer.
