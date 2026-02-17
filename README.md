@@ -1,9 +1,11 @@
 # 🧠 Detection Fidelity Score (DFS)
-
 ![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.11-blue)
 ![Detection Engineering](https://img.shields.io/badge/focus-detection%20engineering-black)
 ![Model](https://img.shields.io/badge/model-decision%20confidence-orange)
+![Version](https://img.shields.io/badge/version-0.1.0-green)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 
 
 **Current Specification Version:** v1.0
