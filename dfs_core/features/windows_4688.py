@@ -141,3 +141,10 @@ def win4688_to_dfs_inputs(event: Dict[str, Any]) -> DFSInputs:
 def win4688_to_inputs_and_flags(event: dict):
     return win4688_to_dfs_inputs(event), win4688_context_flags(event)
 
+from dfs_core.features.registry import register
+
+register("windows-4688", win4688_to_inputs_and_flags)
+register("4688", win4688_to_inputs_and_flags)
+register("win4688", win4688_to_inputs_and_flags)
+
+
