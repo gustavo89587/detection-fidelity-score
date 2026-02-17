@@ -1,0 +1,16 @@
+{
+  "name": "powershell-4104",
+  "weights": { "s": 0.45, "t": 0.30, "b": 0.25 },
+  "penalties": {
+    "missing_command_line": 0.35,
+    "missing_parent": 0.00,
+    "missing_user": 0.10,
+    "missing_host": 0.05,
+    "missing_process_path": 0.00
+  },
+  "thresholds": {
+    "investigate_max": 0.55,
+    "escalate_max": 0.78,
+    "automate_hard_min": 0.93
+  }
+}
