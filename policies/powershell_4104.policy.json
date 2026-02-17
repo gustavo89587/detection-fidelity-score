@@ -14,3 +14,10 @@
     "automate_hard_min": 0.93
   }
 }
+
+"penalties": {
+  "missing_scriptblock": 0.35,
+  "missing_user": 0.10,
+  "missing_host": 0.05
+}
+
