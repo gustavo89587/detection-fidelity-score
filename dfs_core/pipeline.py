@@ -1,3 +1,5 @@
+import dfs_core.features  # noqa: F401
+
 # dfs_core/pipeline.py
 from __future__ import annotations
 
@@ -9,7 +11,6 @@ from dfs_core.guardrails import DFSGuardrail
 from dfs_core.policy import DFSPolicy, load_policy
 from dfs_core.decision_card import DecisionCard, build_decision_card
 
-import dfs_core.features  # noqa: F401
 
 # Registry
 from dfs_core.features.registry import get as get_extractor
