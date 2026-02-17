@@ -14,3 +14,9 @@
     "automate_hard_min": 0.92
   }
 }
+"penalties": {
+  "missing_command_line": 0.30,
+  "missing_parent_image": 0.15,
+  "missing_user": 0.10,
+  "missing_process_image": 0.05
+}
