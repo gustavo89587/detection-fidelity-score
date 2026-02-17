@@ -180,7 +180,9 @@ def win4624_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSInputs, Dict[
         # extra flags
         "has_domain": ctx.has_domain,
         "has_logon_type": ctx.has_logon_type,
+        "has_source_ip": ctx.has_source_ip,
         "has_auth_package": ctx.has_auth_package,
+        "has_workstation": ctx.has_workstation,
         "has_elevation": ctx.has_elevation,
         "has_target_sid": ctx.has_target_sid,
         "is_privileged_target": ctx.is_privileged_target,
