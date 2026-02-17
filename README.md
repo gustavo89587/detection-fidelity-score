@@ -1,5 +1,10 @@
 # 🧠 Detection Fidelity Score (DFS)
 
+**Current Specification Version:** v1.0
+
+Engineering detection as survivable decision systems under telemetry uncertainty.
+
+
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue) ![Status](https://img.shields.io/badge/status-active%20development-green) ![Version](https://img.shields.io/badge/version-v0.1-informational) ![Author](https://img.shields.io/badge/author-Gustavo%20Okamoto-black) ![Focus](https://img.shields.io/badge/focus-detection%20engineering-purple)
 
 ![Status](https://img.shields.io/badge/status-active_research-blue)
@@ -85,6 +90,35 @@ DFS enables:
 
 It transforms alert quality from intuition to structured evaluation.
 
+## The DFS Triad
+
+DFS operates across three structural layers:
+
+### A — Detection Engineering Lens (Core)
+
+A measurable framework for designing survivable detection decision systems.
+
+DFS models reliability across signal strength, telemetry stability, and behavioral robustness.
+
+This is the technical foundation.
+
+---
+
+### B — Governance Discipline
+
+A structured method for enforcing trust boundaries, automation eligibility, and detection lifecycle review.
+
+DFS enables measurable discussions between engineering and leadership.
+
+---
+
+### C — Cultural Shift
+
+A mindset shift from alert generation to engineered decision reliability.
+
+Detection is not about volume.
+It is about defensible decisions under uncertainty.
+
 
 ## 🎯 Why DFS exists
 
@@ -168,6 +202,19 @@ Each rule must declare its Trust Decision Boundary (what action it authorizes), 
 - **Drift** (adversary evolution)
 
 The goal is to ship detections that remain operationally reliable over time, with explicit validation gates and governance tiers — rather than maximizing coverage at the expense of analyst trust.
+
+## Maintainer
+
+Detection Fidelity Score (DFS) was originally formulated and is actively maintained by Gustavo Okamoto.
+
+Model evolution, specification updates, and structural refinements are managed through the official repository.
+
+DFS is intended as a long-term detection engineering discipline.
+
+DFS specification versions are maintained and published through this official repository.
+
+Any structural updates to the scoring model, degradation framework, or governance discipline will increment the specification version.
+
 
 
 © 2026 Gustavo Okamoto
@@ -335,6 +382,27 @@ Drift
 Adversary behavior evolves to bypass logic.
 
 Detections are reviewed as dynamic systems — not static rules.
+
+## Model Integrity & Usage Principles
+
+DFS is not:
+
+- A compliance scoring mechanism
+- A marketing performance metric
+- A vendor comparison shortcut
+- A replacement for threat modeling
+
+DFS is a survivability indicator.
+
+It must be applied with engineering judgment, contextual calibration, and explicit decision boundary declaration.
+
+Any implementation that removes degradation modeling or trust boundary analysis is incomplete.
+
+All DFS-based implementations should explicitly reference the official specification version to maintain structural alignment and prevent misinterpretation of the model.
+
+Unversioned adaptations may not reflect the full DFS discipline.
+
+
 
 Detection Design Standard (DDS)
 
