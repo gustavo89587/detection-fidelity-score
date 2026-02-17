@@ -147,4 +147,10 @@ register("windows-4688", win4688_to_inputs_and_flags)
 register("4688", win4688_to_inputs_and_flags)
 register("win4688", win4688_to_inputs_and_flags)
 
+from dfs_core.features.registry import register
+
+register("windows-4688", win4688_to_inputs_and_flags)
+register("4688", win4688_to_inputs_and_flags)
+register("win4688", win4688_to_inputs_and_flags)
+
 
