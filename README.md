@@ -28,6 +28,34 @@ A practical framework to measure signal quality, noise overlap, and operational 
 
 DFS is a framework to measure detection signal trust, design detections as decision systems, and approach detection engineering as an operational discipline.
 
+## DFS as a Product (Operational, Not Academic)
+
+I treat detection as **decision engineering**.
+
+DFS outputs a **DecisionCard** for each event:
+- a score (0..1)
+- a bounded action recommendation (Investigate / Escalate / Automate-Lite / Automate-Hard)
+- an explanation of *why* the confidence is high or fragile
+
+### Why this exists
+Most SOC failures aren’t “bad detections”.
+They are **automation acting on partial context**.
+
+DFS makes that visible:
+- missing telemetry → lower confidence
+- obfuscation → weaker clarity
+- high-risk behavior markers → stronger behavioral coherence
+
+### What you can do with it
+- Compare detection survivability under redaction/degradation
+- Enforce “minimum context before automation”
+- Export DecisionCards into any pipeline (agents, SOAR, SIEM enrichment)
+
+### Quick start (CLI)
+```bash
+py dfs_cli.py score examples/events_4104.jsonl --kind windows-powershell-4104 --policy policies/powershell_4104.policy.json
+
+
 
 ## Who this is for
 
