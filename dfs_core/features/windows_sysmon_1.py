@@ -150,7 +150,8 @@ def sysmon1_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSInputs, Dict[
     # Flags normalized for explain_score
     flags = {
         "has_command_line": ctx.has_command_line,
-        "has_parent_process": ctx.has_parent_image,
+        "has_parent_process": ctx.has_parent_image,]
+        "has_parent_image": ctx.has_parent_image,
         "has_user": ctx.has_user,
         "has_host": ctx.host_present,
         "has_process_path": ctx.has_process_image,
@@ -161,6 +162,7 @@ def sysmon1_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSInputs, Dict[
         "has_parent_command_line": ctx.has_parent_command_line,
         "looks_encoded_ps": ctx.looks_encoded_ps,
         "suspicious_parent_chain": ctx.suspicious_parent_chain,
+        "has_process_image": ctx.has_process_image,
     }
 
     return DFSInputs(float(s), float(t), float(b)), flags
