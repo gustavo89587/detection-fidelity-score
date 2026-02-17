@@ -2,6 +2,10 @@
 
 **Current Specification Version:** v1.0
 
+Upcoming Specification Expansion: v1.1  
+Focus: Detection Survivability Infrastructure Layer
+
+
 Engineering detection as survivable decision systems under telemetry uncertainty.
 
 
@@ -572,11 +576,14 @@ This model is intentionally lightweight and meant for research and experimentati
 
 ## 🗺️ Roadmap
 
-### v1.1
-- Formal DFS scoring calibration model
-- Telemetry stability scoring guidelines
-- Drift simulation reference scenarios
-- SOC cost modeling framework
+### v1.1 — Detection Survivability Infrastructure Layer
+
+- SOC implementation lifecycle model
+- Automation eligibility governance
+- Telemetry Contract Model
+- Survivability drift recalibration process
+- Structural degradation modeling refinement
+
 
 ### v1.2
 - Reference degraded detection dataset
