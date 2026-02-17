@@ -207,6 +207,15 @@ Each rule must declare its Trust Decision Boundary (what action it authorizes), 
 
 The goal is to ship detections that remain operationally reliable over time, with explicit validation gates and governance tiers — rather than maximizing coverage at the expense of analyst trust.
 
+## Reference Implementation
+
+The official DFS Reference Implementation is maintained separately to preserve structural integrity and version alignment.
+
+This repository contains the specification and discipline.
+
+Implementation details are maintained under the official DFS Core repository.
+
+
 ## Maintainer
 
 Detection Fidelity Score (DFS) was originally formulated and is actively maintained by Gustavo Okamoto.
