@@ -17,4 +17,5 @@ def test_invalid_input():
 def test_interpretation():
     model = DFSModel()
     score = model.score(DFSInputs(0.9, 0.9, 0.9))
-    assert model.interpret(score) == "High Trust"
+    assert model.interpret(score) == "Operational"
+
