@@ -1,0 +1,11 @@
+{
+  "loss": 0.85,
+  "distortion": 0.85,
+  "drift": 0.60,
+  "signals": {
+    "prompt_leak_attempt": true,
+    "indirect_injection": true,
+    "shadow_ai": false,
+    "delegation_depth": 2
+  }
+}
