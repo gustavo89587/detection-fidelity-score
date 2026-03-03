@@ -1,52 +1,62 @@
-# Python
+# --- Python ---
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Jupyter
+# Virtualenvs (never commit)
+.venv/
+venv/
+env/
+dfs_core/.venv/
+
+# --- Jupyter ---
 .ipynb_checkpoints/
 
-# Local artifacts / outputs
-dfs_*_report.csv
+# --- OS / Editors ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- DFS: generated outputs (never commit) ---
+output/
+runs/
+artifacts/
+reports/
+timelines/
+
+dfs_core/runs/
+dfs_core/output/
+dfs_core/artifacts/
+
+# Root-level generated artifacts currently observed
+decision.json
+dfs_report.csv
+dfs_monte_carlo_report.csv
+dfs_calibration_report.csv
 dfs_agent_timeline.csv
-dfs_report.csv
-dfs_monte_carlo_report.csv
-dfs_calibration_report.csv
-
-# Runs/artifacts folders
-dfs_core/runs/
-core/__pycache__/
-tests/__pycache__/
-
-__pycache__/
-*.pyc
-.ipynb_checkpoints/
-
-# outputs
-output/
 dfs_*_report.csv
 dfs_*timeline*.csv
-dfs_report.csv
-dfs_monte_carlo_report.csv
-dfs_calibration_report.csv
 
-# runs
-dfs_core/runs/
+# Package-level generated artifacts currently observed
+dfs_core/dfs_agent_timeline.csv
+dfs_core/dir.txt
 
-@"
-__pycache__/
-*.pyc
-.ipynb_checkpoints/
+# --- Local data (never commit) ---
+data/
+!data/README.md
+!data/samples/
+!data/samples/**
 
-# generated outputs
-output/
-dfs_*_report.csv
-dfs_*timeline*.csv
-dfs_report.csv
-dfs_monte_carlo_report.csv
-dfs_calibration_report.csv
-
-# runs
-dfs_core/runs/
-"@ | Out-File -Encoding utf8 .gitignore
+# --- Secrets / env ---
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
