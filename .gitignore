@@ -33,3 +33,20 @@ dfs_calibration_report.csv
 
 # runs
 dfs_core/runs/
+
+@"
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# generated outputs
+output/
+dfs_*_report.csv
+dfs_*timeline*.csv
+dfs_report.csv
+dfs_monte_carlo_report.csv
+dfs_calibration_report.csv
+
+# runs
+dfs_core/runs/
+"@ | Out-File -Encoding utf8 .gitignore
