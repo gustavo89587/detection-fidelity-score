@@ -6,8 +6,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-from dfs_core.pipeline import evaluate_event
-
+from dfs_core.pipeline import run_score_pipeline
 
 def iter_json_lines(path: str) -> Any:
     p = Path(path)
@@ -17,22 +16,16 @@ def iter_json_lines(path: str) -> Any:
             if not line:
                 continue
             yield json.loads(line)
-
-
 def cmd_score(args: argparse.Namespace) -> int:
-    count = 0
-    for evt in iter_json_lines(args.input):
-        res = evaluate_event(
-            evt,
-            kind=args.kind,
-            policy_path=args.policy,
-            event_id=str(evt.get("event", {}).get("id") or evt.get("eventID") or ""),
-        )
-        print(json.dumps(res.card.to_dict(), ensure_ascii=False))
-        count += 1
-        if args.limit and count >= args.limit:
-            break
+    for res in run_score_pipeline(
+        events_path=args.input,
+        policy_path=args.policy,
+        limit=args.limit if args.limit else None,
+    ):
+        print(json.dumps(res, ensure_ascii=False, indent=2))
+
     return 0
+
 
 
 def main() -> int:

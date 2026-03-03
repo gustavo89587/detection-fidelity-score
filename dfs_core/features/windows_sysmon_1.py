@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Tuple
 
-from dfs_core.scoring import DFSInputs
+from core.model import DFSInputs
 from dfs_core.features.registry import register
 
 
@@ -172,3 +172,4 @@ def sysmon1_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSInputs, Dict[
 register("windows-sysmon-1", sysmon1_to_inputs_and_flags)
 register("sysmon-1", sysmon1_to_inputs_and_flags)
 register("1", sysmon1_to_inputs_and_flags)
+

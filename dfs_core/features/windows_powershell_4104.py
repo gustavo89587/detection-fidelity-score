@@ -5,8 +5,8 @@ import re
 from dataclasses import dataclass
 from typing import Any, Dict, Tuple
 
-from dfs_core.scoring import DFSInputs
-from dfs_core.features.registry import register
+from core.model import DFSInputs
+
 
 
 def _truthy(v: Any) -> bool:
@@ -31,6 +31,15 @@ def _get(d: Dict[str, Any], path: str) -> Any:
             return None
         cur = cur.get(part)
     return cur
+
+from typing import Any, Dict, Tuple, Optional
+from core.model import DFSInputs
+
+def extract(event: Dict[str, Any], policy: Optional[Dict[str, Any]] = None) -> Tuple[DFSInputs, Dict[str, Any]]:
+    inputs, flags = ps4104_to_inputs_and_flags(event)
+    return inputs, flags
+
+
 
 
 # -----------------------------
@@ -203,8 +212,13 @@ def ps4104_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSInputs, Dict[s
 
     return DFSInputs(float(s), float(t), float(b)), flags
 
+def extract(event: Dict[str, Any], policy: Dict[str, Any] | None = None):
+    inputs, flags = ps4104_to_inputs_and_flags(event)
+    return inputs, flags
+
+
 
 # Register kinds
-register("windows-powershell-4104", ps4104_to_inputs_and_flags)
-register("powershell-4104", ps4104_to_inputs_and_flags)
-register("4104", ps4104_to_inputs_and_flags)
+
+# register("4104", ps4104_to_inputs_and_flags)
+

@@ -6,7 +6,8 @@
     "missing_parent": 0.00,
     "missing_user": 0.10,
     "missing_host": 0.05,
-    "missing_process_path": 0.00
+    "missing_process_path": 0.00,
+    "missing_scriptblock": 0.35
   },
   "thresholds": {
     "investigate_max": 0.55,
@@ -14,10 +15,3 @@
     "automate_hard_min": 0.93
   }
 }
-
-"penalties": {
-  "missing_scriptblock": 0.35,
-  "missing_user": 0.10,
-  "missing_host": 0.05
-}
-

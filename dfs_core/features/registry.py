@@ -1,27 +1,56 @@
 # dfs_core/features/registry.py
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Tuple
+import importlib
+from dataclasses import dataclass
+from typing import Callable, Any, Dict
 
-from dfs_core.scoring import DFSInputs
+@dataclass(frozen=True)
+class FeatureSpec:
+    module: str
+    factory: str  # nome do callable dentro do módulo (ex.: "extract")
 
-# extractor signature:
-# event(dict) -> (DFSInputs, flags_dict)
-Extractor = Callable[[Dict[str, Any]], Tuple[DFSInputs, Dict[str, bool]]]
+FEATURES: Dict[str, FeatureSpec] = {
+    # foco agora: só garantir 4104
+    "windows-powershell-4104": FeatureSpec(
+        module="dfs_core.features.windows_powershell_4104",
+        factory="extract",  # ajuste se o seu nome for outro
+    ),
 
-_REGISTRY: Dict[str, Extractor] = {}
+    # você pode deixar os outros mapeados, mas NÃO vamos importar agora
+    "windows-4624": FeatureSpec(module="dfs_core.features.windows_4624", factory="extract"),
+    "windows-4688": FeatureSpec(module="dfs_core.features.windows_4688", factory="extract"),
+    "windows-sysmon-1": FeatureSpec(module="dfs_core.features.windows_sysmon_1", factory="extract"),
+    "registry": FeatureSpec(module="dfs_core.features.registry", factory="extract"),
+    "aws-cloudtrail-iam": FeatureSpec(module="dfs_core.features.aws_cloudtrail_iam", factory="extract"),
+}
 
+class FeatureNotFoundError(RuntimeError):
+    pass
 
-def register(kind: str, extractor: Extractor) -> None:
-    _REGISTRY[kind.lower().strip()] = extractor
+def load_feature(kind: str) -> Callable[..., Any]:
+    spec = FEATURES.get(kind)
+    if not spec:
+        raise FeatureNotFoundError(f"Unknown feature kind: {kind}")
 
+    try:
+        mod = importlib.import_module(spec.module)
+    except Exception as e:
+        # importante: erro de outro módulo não derruba tudo
+        raise RuntimeError(
+            f"Failed to import feature module for kind='{kind}' ({spec.module}). Error: {e}"
+        ) from e
 
-def get(kind: str) -> Extractor:
-    k = kind.lower().strip()
-    if k not in _REGISTRY:
-        raise KeyError(f"Extractor not registered: {kind}")
-    return _REGISTRY[k]
+    try:
+        fn = getattr(mod, spec.factory)
+    except AttributeError as e:
+        raise RuntimeError(
+            f"Feature kind='{kind}' loaded module '{spec.module}' but missing factory '{spec.factory}'."
+        ) from e
 
+    if not callable(fn):
+        raise RuntimeError(
+            f"Feature kind='{kind}' factory '{spec.factory}' in '{spec.module}' is not callable."
+        )
 
-def list_kinds():
-    return sorted(_REGISTRY.keys())
+    return fn

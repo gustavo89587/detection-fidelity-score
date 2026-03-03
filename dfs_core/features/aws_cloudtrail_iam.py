@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Tuple
 
-from dfs_core.scoring import DFSInputs
+from core.model import DFSInputs
 from dfs_core.features.registry import register
 
 
@@ -151,3 +151,4 @@ def aws_cloudtrail_iam_to_inputs_and_flags(event: Dict[str, Any]) -> Tuple[DFSIn
 # Register kinds
 register("aws-cloudtrail-iam", aws_cloudtrail_iam_to_inputs_and_flags)
 register("cloudtrail-iam", aws_cloudtrail_iam_to_inputs_and_flags)
+
