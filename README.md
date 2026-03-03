@@ -1,3 +1,13 @@
+## Quickstart
+
+```bash
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+pip install -r requirements.txt
+
+python simulate.py --case case01 --out output/dfs_report.csv
+
 # 🧠 Detection Fidelity Score (DFS)
 ![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.11-blue)

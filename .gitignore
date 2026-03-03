@@ -18,3 +18,18 @@ dfs_calibration_report.csv
 dfs_core/runs/
 core/__pycache__/
 tests/__pycache__/
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# outputs
+output/
+dfs_*_report.csv
+dfs_*timeline*.csv
+dfs_report.csv
+dfs_monte_carlo_report.csv
+dfs_calibration_report.csv
+
+# runs
+dfs_core/runs/
