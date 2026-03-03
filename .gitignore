@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local artifacts / outputs
+dfs_*_report.csv
+dfs_agent_timeline.csv
+dfs_report.csv
+dfs_monte_carlo_report.csv
+dfs_calibration_report.csv
+
+# Runs/artifacts folders
+dfs_core/runs/
+core/__pycache__/
+tests/__pycache__/
