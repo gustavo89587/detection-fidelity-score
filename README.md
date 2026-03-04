@@ -293,7 +293,7 @@ Apache License 2.0
 ## Author
 
 Detection Fidelity Score (DFS)
-Originally formulated and maintained by Gustavo Okamoto
+# Originally formulated and maintained by Gustavo Okamoto
 
 DFS was created from practical observation of how detection systems behave under real operational pressure.
 
