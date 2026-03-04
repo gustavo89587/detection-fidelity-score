@@ -2,170 +2,156 @@
 from __future__ import annotations
 
 import csv
+import json
 import random
-from dataclasses import asdict
-from typing import Any, Dict, List, Optional
-
-from .engine import DecisionReliabilityEngine
-
-
-DEFAULT_STAGES = ["PLAN", "RETRIEVE", "TOOL_REQUEST", "EXECUTE", "POST_CHECK"]
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 
-def _bool_from_p(p: float, rng: random.Random) -> bool:
-    return rng.random() < p
+@dataclass(frozen=True)
+class SimRow:
+    run_id: int
+    stage: int
+    trust: str              # HIGH | MEDIUM | LOW
+    decision: str           # ALLOW | REVIEW | BLOCK
+    gate_triggered: int     # 0/1
+    score: float            # 0..1
 
 
-def _clamp01(x: float) -> float:
-    return 0.0 if x < 0.0 else 1.0 if x > 1.0 else x
+TRUST_LEVELS = ("HIGH", "MEDIUM", "LOW")
+DECISIONS = ("ALLOW", "REVIEW", "BLOCK")
 
 
-def _draw_metric(rng: random.Random, lo: float = 0.05, hi: float = 0.95) -> float:
-    return round(_clamp01(rng.uniform(lo, hi)), 2)
+def _ensure_parent(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def _row_order() -> List[str]:
-    # Keep original columns + add decision fields at the end (compatible)
-    return [
-        "ts",
-        "run_id",
-        "step",
-        "stage",
-        "loss",
-        "distortion",
-        "drift",
-        "base",
-        "penalty",
-        "gate_triggered",
-        "reasons",
-        "score",
-        "trust",
-        "prompt_leak_attempt",
-        "indirect_injection",
-        "shadow_ai",
-        "delegation_depth",
-        "structural_risk",
-        "structural_gate",
-        "decision",
-        "decision_reason",
-    ]
+def _weighted_choice(rng: random.Random, items: List[str], weights: List[float]) -> str:
+    # random.choices exists, but we keep it explicit and stable.
+    x = rng.random()
+    cum = 0.0
+    for item, w in zip(items, weights):
+        cum += w
+        if x <= cum:
+            return item
+    return items[-1]
+
+
+def _simulate_one_run(rng: random.Random, run_id: int, stages: int = 5) -> List[SimRow]:
+    """
+    Simple, deterministic simulator:
+    - Each run produces `stages` rows (one per stage).
+    - Trust distribution is roughly: HIGH 0.30, MEDIUM 0.40, LOW 0.30 (matches your console vibe).
+    - Decision is derived from trust with some randomness.
+    - gate_triggered = 1 when decision == BLOCK (can evolve later).
+    """
+    trust_weights = [0.30, 0.40, 0.30]
+
+    rows: List[SimRow] = []
+    for stage in range(1, stages + 1):
+        trust = _weighted_choice(rng, list(TRUST_LEVELS), trust_weights)
+
+        # Decision mapping (tunable)
+        if trust == "HIGH":
+            decision = _weighted_choice(rng, list(DECISIONS), [0.80, 0.18, 0.02])
+            score = rng.uniform(0.70, 0.98)
+        elif trust == "MEDIUM":
+            decision = _weighted_choice(rng, list(DECISIONS), [0.35, 0.55, 0.10])
+            score = rng.uniform(0.40, 0.75)
+        else:  # LOW
+            decision = _weighted_choice(rng, list(DECISIONS), [0.10, 0.55, 0.35])
+            score = rng.uniform(0.05, 0.55)
+
+        gate_triggered = 1 if decision == "BLOCK" else 0
+
+        rows.append(
+            SimRow(
+                run_id=run_id,
+                stage=stage,
+                trust=trust,
+                decision=decision,
+                gate_triggered=gate_triggered,
+                score=round(float(score), 4),
+            )
+        )
+
+    return rows
 
 
 def simulate_agent_pipeline(
-    *,
-    runs: int = 40,
-    seed: int = 7,
-    stages: Optional[List[str]] = None,
-    out_csv: str = "dfs_agent_timeline.csv",
-) -> Dict[str, Any]:
+    runs: int = 1,
+    seed: Optional[int] = None,
+    out_csv: Union[str, Path] = "dfs_report.csv",
+) -> Dict:
     """
-    Generates a synthetic agent timeline and scores each step with DFS.
-    Output CSV includes unified decision fields: decision + decision_reason.
+    Generates a CSV report and returns a summary dict.
 
-    Returns a summary dict used by CLI printing.
+    Contract:
+    - Creates parent directories for out_csv automatically.
+    - Writes UTF-8 CSV with stable column order.
+    - Returns a summary shaped for CLI printing / JSON serialization.
     """
-    stages = stages or list(DEFAULT_STAGES)
+    if runs <= 0:
+        raise ValueError("--runs must be >= 1")
+
+    # Normalize output path
+    out_path = Path(out_csv)
+    _ensure_parent(out_path)
+
+    # RNG
+    if seed is None:
+        # Still deterministic per process if you set PYTHONHASHSEED etc. —
+        # but here we want explicit control. If seed is None, randomize once.
+        seed = random.SystemRandom().randint(1, 2**31 - 1)
     rng = random.Random(seed)
 
-    engine = DecisionReliabilityEngine()
+    stages = 5
+    all_rows: List[SimRow] = []
+    for run_id in range(1, runs + 1):
+        all_rows.extend(_simulate_one_run(rng, run_id=run_id, stages=stages))
 
-    trust_counts: Dict[str, int] = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
-    decision_counts: Dict[str, int] = {"ALLOW": 0, "REVIEW": 0, "BLOCK": 0}
-
+    # Aggregate summary
+    trust_counts = {k: 0 for k in TRUST_LEVELS}
+    decision_counts = {k: 0 for k in DECISIONS}
     gates_triggered = 0
-    total_rows = 0
 
-    # simple "session-ish" variable: delegation depth tends to grow with run/steps
-    # This is synthetic; you can later replace with state-aware session logic.
-    with open(out_csv, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=_row_order())
-        writer.writeheader()
+    for r in all_rows:
+        trust_counts[r.trust] += 1
+        decision_counts[r.decision] += 1
+        gates_triggered += int(r.gate_triggered)
 
-        for run_id in range(1, runs + 1):
-            delegation_depth = 1
+    total_rows = len(all_rows)
+    gate_rate = round(gates_triggered / total_rows, 6) if total_rows else 0.0
 
-            for step_idx, stage in enumerate(stages, start=1):
-                # ---- Synthetic signals (tune these probabilities to force demos) ----
-                # Low probabilities by default; spikes occasionally.
-                prompt_leak_attempt = _bool_from_p(0.03 if stage != "EXECUTE" else 0.06, rng)
-                indirect_injection = _bool_from_p(0.05 if stage == "RETRIEVE" else 0.03, rng)
-                shadow_ai = _bool_from_p(0.02, rng)
+    # Write CSV
+    fieldnames = ["run_id", "stage", "trust", "decision", "gate_triggered", "score"]
+    with out_path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
+        for r in all_rows:
+            w.writerow(asdict(r))
 
-                # Depth grows mostly after TOOL_REQUEST / EXECUTE
-                if stage in ("TOOL_REQUEST", "EXECUTE") and _bool_from_p(0.45, rng):
-                    delegation_depth += 1
-
-                signals = {
-                    "prompt_leak_attempt": prompt_leak_attempt,
-                    "indirect_injection": indirect_injection,
-                    "shadow_ai": shadow_ai,
-                    "delegation_depth": float(delegation_depth),
-                    # IMPORTANT: decision layer uses this
-                    "stage": stage,
-                    # Optional; leave empty unless you model action types later
-                    # "action": "ISOLATE_HOST",
-                }
-
-                # ---- Metrics (0..1) ----
-                loss = _draw_metric(rng)
-                distortion = _draw_metric(rng)
-                drift = _draw_metric(rng)
-
-                snapshot = {
-                    "loss": loss,
-                    "distortion": distortion,
-                    "drift": drift,
-                    "signals": signals,
-                }
-
-                result = engine.evaluate(snapshot)
-
-                # Counts
-                trust_counts[result.trust] = trust_counts.get(result.trust, 0) + 1
-                decision_counts[result.decision] = decision_counts.get(result.decision, 0) + 1
-                gates_triggered += int(result.gate_triggered)
-                total_rows += 1
-
-                # CSV row
-                row = {
-                    "ts": "",  # keep empty for compatibility (you can add ISO timestamps later)
-                    "run_id": run_id,
-                    "step": step_idx,
-                    "stage": stage,
-                    "loss": loss,
-                    "distortion": distortion,
-                    "drift": drift,
-                    "base": round(result.base, 2),
-                    "penalty": round(result.penalty, 2),
-                    "gate_triggered": int(result.gate_triggered),
-                    "reasons": result.reasons,
-                    "score": round(result.score, 2),
-                    "trust": result.trust,
-                    "prompt_leak_attempt": 1 if prompt_leak_attempt else 0,
-                    "indirect_injection": 1 if indirect_injection else 0,
-                    "shadow_ai": 1 if shadow_ai else 0,
-                    "delegation_depth": int(delegation_depth),
-                    "structural_risk": round(result.structural_risk, 2),
-                    "structural_gate": 1 if result.structural_gate else 0,
-                    # NEW (infra-layer outputs)
-                    "decision": result.decision,
-                    "decision_reason": result.decision_reason,
-                }
-
-                writer.writerow(row)
-
-    gate_rate = round((gates_triggered / total_rows) * 100.0, 1) if total_rows else 0.0
-
-    # Keep old keys so your CLI output stays compatible
-    return {
+    summary = {
         "runs": runs,
-        "stages": len(stages),
+        "stages": stages,
         "total_rows": total_rows,
         "seed": seed,
         "trust_counts": trust_counts,
         "gates_triggered": gates_triggered,
         "gate_rate": gate_rate,
-        "out_csv": out_csv,
-        # Extra (won't break anything; CLI may choose to print later)
+        "out_csv": str(out_path).replace("\\", "/"),
         "decision_counts": decision_counts,
     }
+
+    # Optional: also write a sibling run.json for traceability
+    # (safe default; won't break anything if you don't want it)
+    try:
+        run_json = out_path.with_suffix(".run.json")
+        _ensure_parent(run_json)
+        run_json.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    except Exception:
+        # Do not fail the simulation if metadata write fails
+        pass
+
+    return summary
