@@ -1,678 +1,255 @@
-## Quickstart
+Detection Fidelity Score (DFS)
 
-```bash
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-pip install -r requirements.txt
+Security teams measure alerts.
+DFS measures detection signal quality.
 
-python simulate.py --case case01 --out output/dfs_report.csv
+Detection Fidelity Score (DFS) is a framework for evaluating detection systems as decision systems operating under operational cost and telemetry uncertainty.
 
-# 🧠 Detection Fidelity Score (DFS)
-![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
-![Python](https://img.shields.io/badge/python-3.11-blue)
-![Detection Engineering](https://img.shields.io/badge/focus-detection%20engineering-black)
-![Model](https://img.shields.io/badge/model-decision%20confidence-orange)
-![Version](https://img.shields.io/badge/version-0.1.0-green)
-![License](https://img.shields.io/badge/license-MIT-blue)
+DFS introduces a structured way to analyze how detections behave in real environments, focusing on signal trust, survivability, and decision reliability rather than alert volume.
 
+The Problem
 
+Modern security operations generate massive volumes of telemetry and alerts.
 
-**Current Specification Version:** v1.0
+However, most detection engineering practices focus on:
 
-Upcoming Specification Expansion: v1.1  
-Focus: Detection Survivability Infrastructure Layer
+rule creation
 
+alert generation
 
-Engineering detection as survivable decision systems under telemetry uncertainty.
+coverage expansion
 
+What is rarely measured is the quality of the signal produced by the detection system.
 
-![License](https://img.shields.io/badge/license-Apache%202.0-blue) ![Status](https://img.shields.io/badge/status-active%20development-green) ![Version](https://img.shields.io/badge/version-v0.1-informational) ![Author](https://img.shields.io/badge/author-Gustavo%20Okamoto-black) ![Focus](https://img.shields.io/badge/focus-detection%20engineering-purple)
+As a result, many SOC teams experience:
 
-![Status](https://img.shields.io/badge/status-active_research-blue)
-![Discipline](https://img.shields.io/badge/focus-detection_engineering-critical)
-![Model](https://img.shields.io/badge/model-decision_systems-informational)
-![License](https://img.shields.io/badge/license-Apache_2.0-green)
+alert fatigue
 
+poor signal-to-noise ratios
 
-> Detection is not about finding activity.  
-> It's about making trustworthy decisions under uncertainty.
+fragile detections that degrade silently
 
-> Used for research, detection design, and SOC signal evaluation.
-> Originally developed from hands-on SOC observation and detection engineering practice.
+automation acting on incomplete context
 
+unclear decision boundaries
 
-A practical framework to measure signal quality, noise overlap, and operational trust in detection engineering.
+Most detections are evaluated in isolation, while in reality they operate as part of a larger decision system.
 
-DFS is a framework to measure detection signal trust, design detections as decision systems, and approach detection engineering as an operational discipline.
+DFS addresses this gap.
 
-## DFS as a Product (Operational, Not Academic)
+Core Idea
 
-I treat detection as **decision engineering**.
+Detection should not be treated as isolated rules.
 
-DFS outputs a **DecisionCard** for each event:
-- a score (0..1)
-- a bounded action recommendation (Investigate / Escalate / Automate-Lite / Automate-Hard)
-- an explanation of *why* the confidence is high or fragile
+Detection systems should be evaluated as decision systems.
 
-### Why this exists
-Most SOC failures aren’t “bad detections”.
-They are **automation acting on partial context**.
+Each detection contributes to operational outcomes such as:
 
-DFS makes that visible:
-- missing telemetry → lower confidence
-- obfuscation → weaker clarity
-- high-risk behavior markers → stronger behavioral coherence
+ignore
+investigate
+escalate
+automate
 
-### What you can do with it
-- Compare detection survivability under redaction/degradation
-- Enforce “minimum context before automation”
-- Export DecisionCards into any pipeline (agents, SOAR, SIEM enrichment)
+Each of these decisions has a real operational cost in analyst time, cognitive load, and automation risk.
 
-### Quick start (CLI)
-```bash
+DFS evaluates detection systems based on:
 
-## Documentation
-- [DFS Whitepaper](docs/dfs_whitepaper.md)
+signal density
 
-py dfs_cli.py score examples/events_4104.jsonl --kind windows-powershell-4104 --policy policies/powershell_4104.policy.json
+operational pressure
 
+decision distribution
 
+system stability under variation
 
-## Who this is for
+detection survivability under telemetry degradation
 
-- Detection Engineers designing production-grade detections  
-- SOC teams struggling with alert trust and signal clarity  
-- Security leaders evaluating detection quality at scale  
-- Researchers studying detection reliability over time  
+Conceptual Model
+events
+   ↓
+detections
+   ↓
+DFS evaluation
+   ↓
+signal quality
+   ↓
+human / automated decision
 
-## How I use this in practice
+DFS acts as a signal evaluation layer between detection logic and operational decision making.
 
-I use DFS to review detections before they reach production environments.
+What DFS Measures
 
-It helps identify:
+DFS evaluates detection systems using several structural dimensions.
 
-- weak telemetry dependencies
-- silent degradation risks
-- unclear decision boundaries
-- hidden analyst cost
+Signal Density
 
-This improves confidence in high-impact alerts and reduces operational noise.
+How much meaningful signal exists relative to noise.
 
-## Project status
+signal_density = (investigate + escalate) / total_events
+Investigation Pressure
 
-DFS is under active development as a long-term detection engineering framework.
+How much workload the detection system creates for analysts.
 
-Current focus:
-- Formalizing detection design standards
-- Modeling signal degradation patterns
-- Building reference detection packs
+investigate_rate = investigate_decisions / total_events
+Escalation Pressure
 
+How frequently detections trigger incident escalation.
 
+escalate_rate = escalations / total_events
+Automation Coverage
 
-## Positioning
+How much of the decision flow can safely be automated.
 
-DFS is not a detection rule set.
+automation_rate = automated_decisions / total_events
+Decision Stability
 
-It is a way to think about signal trust, decision confidence, and detection survivability in real environments.
+How stable the detection system behaves under variation and degraded telemetry.
 
-While DFS is primarily a design and governance discipline, it also introduces a lightweight quantitative model to assess detection survivability under degradation conditions.
+DFS models degradation across three domains:
 
-## Who DFS Serves
+Loss       → missing telemetry
+Distortion → altered semantics
+Drift      → adversary evolution
+Detection Fidelity Score
 
-### For Detection Engineers
+DFS introduces a lightweight scoring structure to evaluate detection survivability.
 
-DFS provides a structured way to:
-
-- Design detections as decision systems
-- Model degradation before production
-- Quantify telemetry dependency risk
-- Justify automation thresholds
-- Reduce analyst cognitive load
-
-It shifts detection from rule-writing to survivability engineering.
-
-### For Security Leaders
-
-DFS enables:
-
-- Measurable detection reliability discussions
-- Explicit trust boundary governance
-- Telemetry investment prioritization
-- Detection lifecycle oversight
-- Automation risk calibration
-
-It transforms alert quality from intuition to structured evaluation.
-
-## The DFS Triad
-
-DFS operates across three structural layers:
-
-### A — Detection Engineering Lens (Core)
-
-A measurable framework for designing survivable detection decision systems.
-
-DFS models reliability across signal strength, telemetry stability, and behavioral robustness.
-
-This is the technical foundation.
-
----
-
-### B — Governance Discipline
-
-A structured method for enforcing trust boundaries, automation eligibility, and detection lifecycle review.
-
-DFS enables measurable discussions between engineering and leadership.
-
----
-
-### C — Cultural Shift
-
-A mindset shift from alert generation to engineered decision reliability.
-
-Detection is not about volume.
-It is about defensible decisions under uncertainty.
-
-
-## 🎯 Why DFS exists
-
-While DFS is primarily a design and governance discipline, it also introduces a lightweight quantitative model to assess detection survivability under degradation conditions.
-
-## Quantitative Model (DFS v1.0)
-
-DFS introduces a minimal scoring structure to evaluate detection survivability across degradation domains.
-
-DFS Score = f(Loss, Distortion, Drift, Confidence Boundary)
-
-The model does not replace engineering judgment.
-It structures it.
-
-Each detection can be evaluated across:
-
-- Telemetry dependency exposure
-- Degradation sensitivity
-- Decision boundary clarity
-- Analyst cost amplification
-
-
-Most detections fail not because they are wrong,
-but because they are noisy, fragile, or hard to trust. 
-
-Quantitative Model (DFS v1.0)
-
-Even though DFS is primarily a decision discipline, it also introduces a measurable score to quantify detection survivability under degradation conditions.
-
-Let:
-
-S = Detections surviving intact
-D = Detections degraded but operational
-B = Detections broken
-T = Total detections evaluated
-
-DFS Score:
-
-DFS = (S + 0.5D) / T
-
-Interpretation:
-
-1.0 → No operational degradation
-0.8–0.99 → Minor degradation
-0.5–0.79 → Operational degradation
-<0.5 → High operational risk
-
-DFS allows teams to compare detection reliability before and after telemetry changes, privacy controls, or architectural shifts.
-
-## What DFS is becoming
-
-DFS is evolving into a practical detection engineering discipline focused on:
-
-- Designing detections as decision systems
-- Governing signal trust across environments
-- Measuring degradation over time
-- Supporting high-confidence response automation
-
-The long-term goal is to make detection reliability measurable, reviewable, and enforceable.
-
-## Real-world application (SOC thinking)
-
-I use DFS to evaluate detections before production deployment.
-
-For each rule, I ask:
-
-- What decision does this alert authorize?
-- What telemetry does it depend on?
-- Where can signal degrade? (Loss / Distortion / Drift)
-- What is the expected analyst cost?
-
-If these questions are unclear, the detection is not ready.
-
-DFS turns detections from coverage artifacts into decision systems.
-
-
-Each rule must declare its Trust Decision Boundary (what action it authorizes), and quantify how the signal degrades across:
-
-- **Loss** (missing telemetry)
-- **Distortion** (semantic corruption such as truncation/normalization)
-- **Drift** (adversary evolution)
-
-The goal is to ship detections that remain operationally reliable over time, with explicit validation gates and governance tiers — rather than maximizing coverage at the expense of analyst trust.
-
-## Reference Implementation
-
-The official DFS Reference Implementation is maintained separately to preserve structural integrity and version alignment.
-
-This repository contains the specification and discipline.
-
-Implementation details are maintained under the official DFS Core repository.
-
-
-## Maintainer
-
-Detection Fidelity Score (DFS) was originally formulated and is actively maintained by Gustavo Okamoto.
-
-Model evolution, specification updates, and structural refinements are managed through the official repository.
-
-DFS is intended as a long-term detection engineering discipline.
-
-DFS specification versions are maintained and published through this official repository.
-
-Any structural updates to the scoring model, degradation framework, or governance discipline will increment the specification version.
-
-
-
-© 2026 Gustavo Okamoto
-Licensed under the Apache License, Version 2.0
-
-Engineering and Governing Trust in Automated Security Decisions
-Detection Signal
-        │
-        ▼
-┌─────────────────────────────┐
-│     Degradation Domains     │
-│                             │
-│   • Loss        (missing)   │
-│   • Distortion  (altered)   │
-│   • Drift       (decayed)   │
-└─────────────────────────────┘
-        │
-        ▼
-   Trust Decision Boundary
-        │
-        ▼
- Human │ Automated │ Contextual
-
-
-Engineering detection as a decision system — not an alert generator.
-
-## The Problem
-
-Modern detection engineering often prioritizes:
-
-Coverage over clarity
-
-Alerts over decisions
-
-Tool logic over behavioral modeling
-
-Automation before governance
-
-This leads to:
-
-Analyst fatigue
-
-Inflated detection catalogs
-
-Poor signal integrity
-
-Fragile rules that degrade silently
-
-DFS proposes a different approach.
-
-Core Concept: Fidelity-Centric Detection
-
-Detection is not an event.
-Detection is a decision boundary.
-
-Every detection must explicitly define:
-
-What behavior is being modeled
-
-What operational decision it enables
-
-How the signal degrades over time
-
-What risks exist in telemetry reliability
-
-Trust Decision Boundary 
-
----
-
-## 🔬 Practical Example – Windows 4688 Detection
-
-To illustrate how DFS works in practice, below is a simplified applied example.
-
-### Detection Hypothesis
-
-Suspicious parent-child process chain indicating execution staging.
-
-Example:
-winword.exe → powershell.exe → encoded command
-
-### Trust Decision Boundary
-
-Action: Escalate to Tier 2 Analyst  
-Confidence Required: ≥ 0.75  
-Operational Tier: High Impact
-
----
-
-### Degradation Analysis
-
-| Domain      | Risk Level | Impact Description |
-|-------------|-----------|-------------------|
-| Loss        | High      | Missing command-line logging removes execution context |
-| Distortion  | Medium    | Truncation alters semantic interpretation |
-| Drift       | High      | Adversary shifts to LOLBins or indirect execution |
-
----
-
-### Analyst Cost Estimation
-
-- Context Required: Process tree + command line
-- Average Triage Time: 6–12 minutes
-- False Positive Surface: Medium
-
----
-
-### Example DFS Score (Illustrative Model)
+Example model:
 
 DFS = Signal Strength × Telemetry Stability × Behavioral Robustness
 
 Where:
 
-- Signal Strength (0–1)
-- Telemetry Stability (0–1)
-- Behavioral Robustness (0–1)
+Signal Strength — clarity of behavioral signal
 
-Example Evaluation:
+Telemetry Stability — resistance to data loss or distortion
 
-Signal Strength: 0.82  
-Telemetry Stability: 0.60  
-Behavioral Robustness: 0.75  
-
-DFS Score = 0.82 × 0.60 × 0.75 = **0.369**
+Behavioral Robustness — resistance to adversary drift
 
 Interpretation:
 
-< 0.40 → Fragile  
-0.40 – 0.70 → Operational  
-> 0.70 → High Trust
+> 0.70   High Trust
+0.40–0.70 Operational
+< 0.40   Fragile
+Example CLI Usage
+dfs compare --events examples/events_4104.jsonl --policies policies/*.policy.json
 
-This detection would require telemetry hardening before automation.
+Example output:
 
----
+policy ranking
 
-DFS is not theoretical.  
-It forces detections to declare survivability under stress.
+powershell-4104          score: 0.65
+windows-4624-soc         score: 0.41
 
+This allows engineers to compare detection policies under the same dataset and operational assumptions.
 
-Each detection declares:
+DFS as Detection Engineering Infrastructure
 
-What action it authorizes (alert / escalate / block / observe)
+DFS is designed to function as a CI layer for detection engineering.
 
-Required confidence level
+Example workflow:
 
-Operational tier
+engineer modifies detection rule
+        ↓
+pull request
+        ↓
+DFS evaluation
+        ↓
+impact report
+        ↓
+approve / revise
 
-Without an explicit boundary, the rule is incomplete.
+DFS helps answer questions such as:
 
-Degradation Model
+Will this rule increase investigation load?
 
-All detections degrade.
+Does this detection improve signal density?
 
-DFS models degradation in three dimensions:
+Does the system become more stable or fragile?
 
-Loss
+Connection to AI Agents
 
-Signal disappears due to missing telemetry.
+Autonomous security systems and AI-driven SOC workflows require reliable signal quality.
 
-Distortion
+Raw alerts alone are insufficient for automated decision making.
 
-Signal changes semantically (e.g., truncation, normalization).
+DFS provides a signal evaluation layer that agents can query before acting.
 
-Drift
+alert
+   ↓
+DFS signal evaluation
+   ↓
+agent decision
 
-Adversary behavior evolves to bypass logic.
+This prevents automation of noise.
 
-Detections are reviewed as dynamic systems — not static rules.
+Who This Project Is For
 
-## Model Integrity & Usage Principles
+DFS is designed for:
 
-DFS is not:
+Detection Engineers
 
-- A compliance scoring mechanism
-- A marketing performance metric
-- A vendor comparison shortcut
-- A replacement for threat modeling
+designing production-grade detections
 
-DFS is a survivability indicator.
+evaluating detection reliability
 
-It must be applied with engineering judgment, contextual calibration, and explicit decision boundary declaration.
+reducing analyst workload
 
-Any implementation that removes degradation modeling or trust boundary analysis is incomplete.
+SOC Teams
 
-All DFS-based implementations should explicitly reference the official specification version to maintain structural alignment and prevent misinterpretation of the model.
+improving signal-to-noise ratio
 
-Unversioned adaptations may not reflect the full DFS discipline.
+understanding detection system behavior
 
+validating detections before deployment
 
+Security Researchers
 
-Detection Design Standard (DDS)
+studying detection reliability
 
-All detections must comply with the formal design standard:
+analyzing signal degradation patterns
 
-See: standards/Detection_Design_Standard_v1.md
+Project Status
 
-This defines:
+DFS is currently under active development and research.
 
-Hypothesis format
+Current focus areas:
 
-Telemetry requirements
+detection survivability modeling
 
-Detection logic structure
+decision system evaluation
 
-False positive surface modeling
+dataset benchmarking
 
-Drift modeling
+detection engineering methodology
 
-Trust boundary declaration
+Long-Term Vision
 
-Validation protocol
+DFS aims to establish a new discipline:
 
-Governance metadata
+Detection Quality Engineering
 
-Detection Packs
+A field focused on:
 
-Structured detection implementations can be found in:
+evaluating detection systems as decision architectures
 
-Detection Pack (v0.1)
+measuring signal reliability under operational constraints
 
-Each pack:
+designing survivable detections
 
-Follows DDS
+enabling safe automation and AI-assisted SOC workflows
 
-Declares Trust Decision Boundary
+License
 
-Includes degradation profile
+Apache License 2.0
 
-Defines validation protocol
-
-Future versions will enforce strict PASS/FAIL fidelity gates.   
-
----
-
-## 📂 Reference Implementations
-
-DFS includes structured examples demonstrating how detection engineering can be evaluated under the Fidelity model.
-
-### Detection Examples
-
-- [Windows 4688 – Suspicious Process Creation](examples/windows_4688_example.md)
-- [Linux auditd – Suspicious Process Execution](examples/linux_auditd_execution_example.md)
-
-Each example includes:
-
-- Detection hypothesis
-- Trust Decision Boundary declaration
-- Degradation modeling (Loss / Distortion / Drift)
-- Analyst cost profile
-- Survivability scoring
-- Governance metadata
-
----
-
-## 📐 Quantitative Model
-
-DFS introduces a lightweight scoring layer for measurable survivability analysis.
-
-See:
-
-- [DFS Scoring Model v1.0](standards/dfs_scoring_model_v1.md)
-
-The scoring model formalizes detection reliability across:
-
-- Signal Strength
-- Telemetry Stability
-- Behavioral Robustness
-
-DFS = S × T × B
-
-This enables:
-
-- Pre-production validation
-- Automation gating decisions
-- Detection lifecycle review
-- Telemetry impact analysis
-
----
-
-## 🧪 Experimental Notebook
-
-A minimal reproducible scoring simulation is available for reference:
-
-- `dfs_scoring_notebook.ipynb`
-
-This notebook demonstrates:
-
-- Comparative scoring across detections
-- Degradation curves
-- Trust band interpretation
-- Visualization of survivability impact
-
-
-Objective
-
-## Operational mindset
-
-DFS was created from a practical observation:
-
-Most detection failures are not technical failures.  
-They are trust failures.
-
-Alerts exist.  
-Rules exist.  
-Coverage exists.  
-
-But under pressure, analysts still hesitate.
-
-DFS focuses on:
-
-- Signal clarity under real conditions
-- Decision confidence during incidents
-- Detection survivability over time
-- Reducing cognitive load on analysts
-
-This is not about writing more rules.
-
-It's about engineering detections that can be trusted when it matters most.
-
-
-Build detection engineering as:
-
-A decision architecture
-
-A signal integrity discipline
-
-A governed operational system
-
-Not just a collection of rules.
-
-## DFS Scoring Model
-## 📊 DFS Scoring Model (Experimental)
-
-DFS can be modeled quantitatively using a simple multiplicative trust function:
-
-DFS = Signal Strength × Telemetry Stability × Behavioral Robustness
-
-Where:
-
-- **Signal Strength (S)** → Clarity of behavioral signal
-- **Telemetry Stability (T)** → Resistance to loss/distortion
-- **Behavioral Robustness (B)** → Resistance to drift/adversary adaptation
-
-Example implementation available:
-
-👉 `dfs_scoring_notebook.ipynb`
-
-The notebook includes:
-
-- Sample detection scoring
-- Trust band classification
-- Degradation curve simulation under telemetry distortion
-- Visualization of signal survivability
-
-This model is intentionally lightweight and meant for research and experimentation.
-
-## 🗺️ Roadmap
-
-### v1.1 — Detection Survivability Infrastructure Layer
-
-- SOC implementation lifecycle model
-- Automation eligibility governance
-- Telemetry Contract Model
-- Survivability drift recalibration process
-- Structural degradation modeling refinement
-
-
-### v1.2
-- Reference degraded detection dataset
-- PASS/FAIL fidelity gates
-- Governance review workflow
-
-### Long-term
-- Detection survivability benchmark
-- Cross-environment fidelity validation
-- Public detection pack library
-
-
-
-Attribution
-## Author intent
-
-DFS was created from a practical need to understand why some detections are trusted and acted upon, while others are ignored or silently degrade over time.
-
-It reflects a mindset shaped by real-world observation of signal reliability, analyst decision pressure, and detection survivability.
-
-
+Author
 
 Detection Fidelity Score (DFS)
-Originally formulated and maintained by Gustavo Okamoto.
+Originally formulated and maintained by Gustavo Okamoto
 
-DFS is designed for long-term structural clarity, not trend cycles.
+DFS was created from practical observation of how detection systems behave under real operational pressure.
 
-Trust must not be assumed.
-It must be engineered.
+The goal is simple:
 
-standards/Detection_Design_Standard_v1.md
-
-Detection Pack (v0.1)/
+Engineering detection systems that produce trustworthy decisions.
