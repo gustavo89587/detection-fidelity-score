@@ -84,3 +84,9 @@ Monte Carlo simulation environment
 Gustavo Okamoto  
 Detection Engineering Research  
 Okamoto Security Labs
+
+## Quick Start
+
+git clone https://github.com/detection-fidelity-score/dfs
+cd dfs
+python simulate.py
