@@ -1,3 +1,23 @@
+# Detection Fidelity Score (DFS)
+
+### Signal Integrity for Detection Engineering
+
+DFS is a framework for evaluating the **trustworthiness of detection signals** across security telemetry pipelines.
+
+It measures three critical failure modes in detection systems:
+
+- **Signal Loss**
+- **Signal Distortion**
+- **Signal Drift**
+
+The result is a **Detection Fidelity Score** that determines whether a signal can safely drive **SOC automation or AI agent decisions**.
+
+---
+
+![Python](https://img.shields.io/badge/python-3.10+-blue)
+![Status](https://img.shields.io/badge/status-research-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Detection Fidelity Score (DFS)
 
 Security teams measure alerts.
