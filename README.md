@@ -18,6 +18,33 @@ The result is a **Detection Fidelity Score** that determines whether a signal ca
 ![Status](https://img.shields.io/badge/status-research-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+## Detection Signal Lifecycle
+
+Telemetry flows through multiple layers before reaching a detection.
+
+Each layer can introduce risk.
+
+
+Telemetry Source
+     │
+     ▼
+Collection Layer
+     │
+     ▼
+Normalization / Parsing
+     │
+     ▼
+Detection Logic
+     │
+     ▼
+DFS Signal Evaluation
+     │
+     ▼
+Trust Boundary Decision
+     │
+     ▼
+SOC / AI Agent Action
+
 Detection Fidelity Score (DFS)
 
 Security teams measure alerts.
