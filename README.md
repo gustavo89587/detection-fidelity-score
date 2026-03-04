@@ -90,3 +90,30 @@ Okamoto Security Labs
 git clone https://github.com/detection-fidelity-score/dfs
 cd dfs
 python simulate.py
+
+## DFS Decision Flow
+Telemetry Sources
+      │
+      ▼
+Collection Layer
+      │
+      ▼
+Parsing / Normalization
+      │
+      ▼
+Detection Logic
+      │
+      ▼
+DFS Signal Evaluation
+   ├── Loss
+   ├── Distortion
+   └── Drift
+      │
+      ▼
+Detection Fidelity Score
+      │
+      ▼
+Trust Boundary
+   ├── Strong → Automation Allowed
+   ├── Degraded → Assist Analyst
+   └── Broken → Human Only
