@@ -25,7 +25,7 @@ Telemetry flows through multiple layers before reaching a detection.
 Each layer can introduce risk.
 
 
-Telemetry Source
+## Telemetry Source
      │
      ▼
 Collection Layer
@@ -45,7 +45,7 @@ Trust Boundary Decision
      ▼
 SOC / AI Agent Action
 
-Detection Fidelity Score (DFS)
+# Detection Fidelity Score (DFS)
 
 Security teams measure alerts.
 DFS measures detection signal quality.
@@ -54,7 +54,7 @@ Detection Fidelity Score (DFS) is a framework for evaluating detection systems a
 
 DFS introduces a structured way to analyze how detections behave in real environments, focusing on signal trust, survivability, and decision reliability rather than alert volume.
 
-The Problem
+# The Problem
 
 Modern security operations generate massive volumes of telemetry and alerts.
 
@@ -84,7 +84,7 @@ Most detections are evaluated in isolation, while in reality they operate as par
 
 DFS addresses this gap.
 
-Core Idea
+## Core Idea
 
 Detection should not be treated as isolated rules.
 
@@ -111,7 +111,7 @@ system stability under variation
 
 detection survivability under telemetry degradation
 
-Conceptual Model
+## Conceptual Model
 events
    ↓
 detections
@@ -161,7 +161,7 @@ Detection Fidelity Score
 
 DFS introduces a lightweight scoring structure to evaluate detection survivability.
 
-Example model:
+## Example model:
 
 DFS = Signal Strength × Telemetry Stability × Behavioral Robustness
 
@@ -173,7 +173,7 @@ Telemetry Stability — resistance to data loss or distortion
 
 Behavioral Robustness — resistance to adversary drift
 
-Interpretation:
+# Interpretation:
 
 > 0.70   High Trust
 0.40–0.70 Operational
@@ -242,7 +242,7 @@ evaluating detection reliability
 
 reducing analyst workload
 
-SOC Teams
+# SOC Teams
 
 improving signal-to-noise ratio
 
@@ -290,7 +290,7 @@ License
 
 Apache License 2.0
 
-Author
+## Author
 
 Detection Fidelity Score (DFS)
 Originally formulated and maintained by Gustavo Okamoto
