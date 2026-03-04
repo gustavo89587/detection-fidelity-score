@@ -1,29 +1,33 @@
 # Detection Fidelity Score (DFS)
 
+![CI](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
+
 ### Signal Integrity for Detection Engineering
 
-DFS is a framework for evaluating the **trustworthiness of detection signals** across security telemetry pipelines.
+DFS is a practical framework to evaluate whether **detection telemetry deserves trust**.
 
-It measures three critical failure modes in detection systems:
+Instead of asking:
+> “Did it alert?”
 
-- **Signal Loss**
-- **Signal Distortion**
-- **Signal Drift**
+DFS asks:
+> **Can this signal safely drive investigation, escalation, or automation?**
 
-The result is a **Detection Fidelity Score** that determines whether a signal can safely drive **SOC automation or AI agent decisions**.
+DFS models three failure modes that break detections in the real world:
+- **Signal Loss** (missing fields / missing sources)
+- **Signal Distortion** (parsing/enrichment changes what the event *means*)
+- **Signal Drift** (behavior changes over time; old logic becomes unreliable)
 
 ---
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![Status](https://img.shields.io/badge/status-research-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/license-Apache--2.0-green)
+
+---
 
 ## Detection Signal Lifecycle
 
-Telemetry flows through multiple layers before reaching a detection.
-
-# Each layer can introduce risk.
-
+```text
 Telemetry Source
      │
      ▼
@@ -42,56 +46,10 @@ DFS Signal Evaluation
 Trust Boundary Decision
      │
      ▼
-SOC / AI Agent Action
+SOC Analyst / AI Agent Action
 
-## Project Architecture
+DFS Decision Flow
 
-dfs/
- ├── engine.py          # core DFS scoring logic
- ├── evaluate.py        # signal evaluation
- ├── decision.py        # trust boundary decisions
- └── simulate.py        # scenario simulation
-
-datasets/
- └── monte_carlo_scenarios.csv
-
-docs/
- └── dfs_concept.md
-
-## Example Evaluation
-
-{
-  "loss": 0.18,
-  "distortion": 0.22,
-  "drift": 0.09,
-  "score": "Degraded",
-  "trust_boundary": "Assist Analyst"
-}
-
-## Roadmap
-Telemetry adapters for SOC pipelines
-
-Elastic and Sigma compatibility
-
-AI agent governance layer
-
-DFS visualization dashboards
-
-Monte Carlo simulation environment
-
-## Author
-
-Gustavo Okamoto  
-Detection Engineering Research  
-Okamoto Security Labs
-
-## Quick Start
-
-git clone https://github.com/detection-fidelity-score/dfs
-cd dfs
-python simulate.py
-
-## DFS Decision Flow
 Telemetry Sources
       │
       ▼
@@ -114,6 +72,68 @@ Detection Fidelity Score
       │
       ▼
 Trust Boundary
-   ├── Strong → Automation Allowed
+   ├── Strong   → Automation Allowed
    ├── Degraded → Assist Analyst
-   └── Broken → Human Only
+   └── Broken   → Human Only
+
+   Live Demo (5 seconds)
+
+git clone https://github.com/gustavo89587/detection-fidelity-score
+cd detection-fidelity-score
+
+Run demo
+powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
+
+CLI Usage
+
+Score a JSONL dataset and emit DecisionCards:
+
+python .\dfs_cli.py score .\examples\events_4104.jsonl `
+  --kind windows-powershell-4104 `
+  --policy .\policies\powershell_4104.policy.json `
+  --limit 3
+
+  Project Layout
+dfs_core/        # scoring pipeline + evaluation logic
+policies/        # scoring policies (thresholds/weights/penalties)
+datasets/        # curated datasets (e.g., CloudTrail IAM abuse, 4104)
+examples/        # small demo datasets
+scripts/         # demo and helper scripts
+tests/           # automated tests
+docs/            # documentation + diagrams
+
+Output Shape (DecisionCard)
+
+Example output:
+
+{
+  "kind": "windows-powershell-4104",
+  "score": 0.6325,
+  "interpretation": "Low Trust",
+  "action": "TRIAGE",
+  "action_reason": [
+    "looks_amsi_bypass",
+    "looks_download_cradle",
+    "looks_reflection"
+  ]
+}
+
+Roadmap
+
+Telemetry adapters (Sysmon / PowerShell / CloudTrail) hardened for real SOC pipelines
+
+Detection quality baselining and drift checks
+
+Governance layer for AI/automation decisions driven by DFS trust boundaries
+
+Author
+
+Gustavo Okamoto
+Okamoto Security Labs
+Detection Engineering / Signal Reliability Research
+
+License
+
+Apache-2.0
+
+
