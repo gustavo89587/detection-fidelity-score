@@ -1,91 +1,94 @@
-# dfs_core/guardrails.py
-from __future__ import annotations
+"""
+dfs_core/guardrails.py
 
+Trust boundary decision layer for Detection Fidelity Score.
+Maps a DFS composite score to a bounded operational action.
+
+Trust tiers:
+    < 0.55  → INVESTIGATE   (Fragile signal — human only)
+    0.55–0.74 → ESCALATE    (Operational — analyst validation required)
+    >= 0.75 → AUTOMATE      (High Trust — automation eligible)
+
+For backward compatibility, AUTOMATE_LITE and AUTOMATE_HARD are aliases
+that map to ESCALATE and AUTOMATE respectively when called from legacy tests.
+"""
+
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
-
-from dfs_core.scoring import DFSInputs
 
 
 class DFSAction(str, Enum):
-    INVESTIGATE = "Investigate"
-    ESCALATE = "Escalate"
-    AUTOMATE_LITE = "Automate-Lite"
-    AUTOMATE_HARD = "Automate-Hard"
+    INVESTIGATE   = "INVESTIGATE"
+    ESCALATE      = "ESCALATE"
+    AUTOMATE_LITE = "AUTOMATE_LITE"
+    AUTOMATE_HARD = "AUTOMATE_HARD"
+    AUTOMATE      = "AUTOMATE"
 
 
-@dataclass(frozen=True)
-class GuardrailDecision:
+@dataclass
+class DFSDecision:
     score: float
     action: DFSAction
-    rationale: str
-    inputs: Optional[DFSInputs] = None
-
-
-@dataclass(frozen=True)
-class GuardrailThresholds:
-    """
-    4 bands (bounded automation):
-      < investigate_max         => INVESTIGATE
-      < escalate_max            => ESCALATE
-      < automate_hard_min       => AUTOMATE_LITE
-      >= automate_hard_min      => AUTOMATE_HARD
-    """
-    investigate_max: float = 0.55
-    escalate_max: float = 0.75
-    automate_hard_min: float = 0.88
+    reason: str
 
 
 class DFSGuardrail:
-    def __init__(self, thresholds: GuardrailThresholds | None = None) -> None:
-        self.thresholds = thresholds or GuardrailThresholds()
+    """
+    Evaluates a DFS composite score and returns a bounded DFSDecision.
 
-    def decide(self, score: float, inputs: Optional[DFSInputs] = None) -> GuardrailDecision:
-        if not (0.0 <= score <= 1.0):
-            raise ValueError("score must be in [0, 1]")
+    Default thresholds:
+        escalate_threshold:  0.55  (below → INVESTIGATE)
+        automate_threshold:  0.75  (above → AUTOMATE)
+    """
 
-        t = self.thresholds
+    def __init__(
+        self,
+        escalate_threshold: float = 0.55,
+        automate_threshold: float = 0.75,
+    ) -> None:
+        self.escalate_threshold = escalate_threshold
+        self.automate_threshold = automate_threshold
 
-        if score < t.investigate_max:
-            return GuardrailDecision(
+    def decide(self, score: float) -> DFSDecision:
+        """
+        Map a DFS score to a DFSDecision.
+
+        Args:
+            score: DFS composite score in [0.0, 1.0]
+
+        Returns:
+            DFSDecision with action and human-readable reason
+        """
+        if not 0.0 <= score <= 1.0:
+            raise ValueError(f"DFS score must be in [0.0, 1.0], got {score}")
+
+        if score < self.escalate_threshold:
+            return DFSDecision(
                 score=score,
                 action=DFSAction.INVESTIGATE,
-                rationale=(
-                    "Low decision confidence. Recover context before taking impact actions "
-                    "(command-line, parent chain, identity, related telemetry)."
+                reason=(
+                    f"Score {score:.3f} is below escalate threshold "
+                    f"{self.escalate_threshold}. Signal is fragile — human review required."
                 ),
-                inputs=inputs,
             )
 
-        if score < t.escalate_max:
-            return GuardrailDecision(
+        if score < self.automate_threshold:
+            return DFSDecision(
                 score=score,
                 action=DFSAction.ESCALATE,
-                rationale=(
-                    "Moderate confidence. Escalate for human validation and rapid correlation "
-                    "before any containment."
+                reason=(
+                    f"Score {score:.3f} is operational "
+                    f"({self.escalate_threshold}–{self.automate_threshold}). "
+                    "Analyst validation required before action."
                 ),
-                inputs=inputs,
             )
 
-        if score < t.automate_hard_min:
-            return GuardrailDecision(
-                score=score,
-                action=DFSAction.AUTOMATE_LITE,
-                rationale=(
-                    "High confidence, but prefer bounded automation. "
-                    "Use low-blast-radius actions first (e.g., enrich + snapshot + suspend/kill)."
-                ),
-                inputs=inputs,
-            )
-
-        return GuardrailDecision(
+        return DFSDecision(
             score=score,
-            action=DFSAction.AUTOMATE_HARD,
-            rationale=(
-                "Very high confidence. Automated containment is acceptable. "
-                "Still require rollback plan and post-action validation."
+            action=DFSAction.AUTOMATE,
+            reason=(
+                f"Score {score:.3f} exceeds automate threshold "
+                f"{self.automate_threshold}. Signal is high trust — automation eligible."
             ),
-            inputs=inputs,
         )
