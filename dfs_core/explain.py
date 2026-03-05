@@ -1,6 +1,6 @@
 # dfs_core/explain.py
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
 from dfs_core.scoring import DFSInputs
@@ -19,9 +19,9 @@ DEFAULT_PENALTIES = {
 @dataclass
 class Explanation:
     base_score: float
-    penalties_applied: list  # lista de tuplas (name, value)
+    penalties_applied: List[Tuple[str, float]]
     final_score: float
-    notes: list
+    notes: List[str]
 
 
 def explain_score(
@@ -31,45 +31,43 @@ def explain_score(
     weights: Dict[str, float] = None,
     penalties: Dict[str, float] = None,
 ) -> Explanation:
-    """
-    Generic DFS explainable scoring.
-
-    weights  defaults to DEFAULT_WEIGHTS  (s=0.40, t=0.35, b=0.25)
-    penalties defaults to DEFAULT_PENALTIES
-    """
     if weights is None:
         weights = DEFAULT_WEIGHTS
     if penalties is None:
         penalties = DEFAULT_PENALTIES
 
-    # Accept both DFSInputs dataclass and plain tuple
     if isinstance(inputs, tuple):
         s, t, b = inputs
+    elif hasattr(inputs, 'signal'):
+        s, t, b = inputs.signal, inputs.trust, inputs.overlap
     else:
         s, t, b = inputs.s, inputs.t, inputs.b
 
     base = s * weights["s"] + t * weights["t"] + b * weights["b"]
 
-    total_penalty = 0.0
-    applied: Dict[str, float] = {}
+    applied: List[Tuple[str, float]] = []
     notes: List[str] = []
 
     for pen_key, pen_value in penalties.items():
         if not pen_key.startswith("missing_"):
             continue
         field_name = pen_key.replace("missing_", "")
-        flag_name = f"has_{field_name}"
+        # check has_parent_process for missing_parent
+        if field_name == "parent":
+            flag_name = "has_parent_process"
+        else:
+            flag_name = f"has_{field_name}"
         present = flags.get(flag_name, True)
         if not present:
-            total_penalty += pen_value
-            applied[pen_key] = pen_value
+            applied.append((pen_key, pen_value))
             notes.append(f"Missing {field_name} reduces decision confidence")
 
+    total_penalty = sum(v for _, v in applied)
     final = max(0.0, base - total_penalty)
 
     return Explanation(
         base_score=round(base, 4),
-        penalties_applied=list(applied.items()),  # dict → lista de tuplas
+        penalties_applied=applied,
         final_score=round(final, 4),
         notes=notes,
     )
