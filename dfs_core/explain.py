@@ -19,9 +19,9 @@ DEFAULT_PENALTIES = {
 @dataclass
 class Explanation:
     base_score: float
-    penalties_applied: Dict[str, float]
+    penalties_applied: list  # lista de tuplas (name, value)
     final_score: float
-    notes: List[str]
+    notes: list
 
 
 def explain_score(
@@ -69,7 +69,7 @@ def explain_score(
 
     return Explanation(
         base_score=round(base, 4),
-        penalties_applied=applied,
+        penalties_applied=list(applied.items()),  # dict → lista de tuplas
         final_score=round(final, 4),
         notes=notes,
     )
