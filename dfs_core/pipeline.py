@@ -1,10 +1,17 @@
+# dfs_core/pipeline.py
+from __future__ import annotations
+
+import json
 from dataclasses import dataclass
+from typing import Any, Dict, Iterable, Optional, List
+
 
 @dataclass
 class DecisionCard:
     score: float
     action: str
     kind: str
+
 
 class EvaluationResult:
     def __init__(self, data: dict):
@@ -14,16 +21,12 @@ class EvaluationResult:
             action=data["action"],
             kind=data["kind"],
         )
+
     def __getitem__(self, key):
         return self._data[key]
+
     def get(self, key, default=None):
         return self._data.get(key, default)
-
-# dfs_core/pipeline.py
-from __future__ import annotations
-
-import json
-from typing import Any, Dict, Iterable, Optional, List
 
 
 def evaluate_event(
@@ -32,24 +35,21 @@ def evaluate_event(
     *,
     kind: str = None,
     policy_path: str = None,
-) -> Dict[str, Any]:
+) -> EvaluationResult:
     """
-    Evaluate a single event and return a DecisionCard-like dict.
+    Evaluate a single event and return an EvaluationResult with .card.score.
     Accepts either:
       - evaluate_event(event, policy_dict)
       - evaluate_event(event, kind="...", policy_path="...")
     """
-    # Load policy from path if provided
     if policy is None and policy_path:
         with open(policy_path, "r", encoding="utf-8") as f:
             policy = json.load(f)
     if policy is None:
         policy = {}
 
-    # Resolve kind from policy or argument
     resolved_kind = kind or (policy.get("kind") if isinstance(policy, dict) else None) or "unknown"
 
-    # Lazy import to avoid circular imports
     from dfs_core.features.registry import load_feature
     from dfs_core import DFSModel
 
@@ -64,8 +64,8 @@ def evaluate_event(
     score_base = float(model.score(inputs))
 
     thresholds = policy.get("thresholds", {}) if isinstance(policy, dict) else {}
-    investigate_max = float(thresholds.get("investigate_max", 0.55))
-    escalate_max = float(thresholds.get("escalate_max", 0.78))
+    investigate_max  = float(thresholds.get("investigate_max",  0.55))
+    escalate_max     = float(thresholds.get("escalate_max",     0.78))
     automate_hard_min = float(thresholds.get("automate_hard_min", 0.93))
 
     penalties_cfg = policy.get("penalties", {}) if isinstance(policy, dict) else {}
@@ -109,7 +109,7 @@ def evaluate_event(
             if flags.get(k) is True:
                 reasons.append(k)
 
-    result = {
+    return EvaluationResult({
         "kind": resolved_kind,
         "score_base": score_base,
         "penalty_total": penalty_total,
@@ -118,15 +118,14 @@ def evaluate_event(
         "action": action,
         "action_reason": reasons[:3],
         "flags": flags,
-    }
-    return EvaluationResult(result)
+    })
 
 
 def run_score_pipeline(
     events_path: str,
     policy_path: str,
     limit: Optional[int] = None,
-) -> Iterable[Dict[str, Any]]:
+) -> Iterable[EvaluationResult]:
     with open(policy_path, "r", encoding="utf-8") as f:
         policy = json.load(f)
 
