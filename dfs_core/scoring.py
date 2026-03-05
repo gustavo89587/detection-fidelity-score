@@ -1,4 +1,12 @@
-from __future__ import annotations
+from __future__ import annotations       
+
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class DFSInputs:
+    s: float  # Signal Strength
+    t: float  # Telemetry Stability
+    b: float  # Behavioral Robustness
 
 def clamp01(x: float) -> float:
     return max(0.0, min(1.0, x))
