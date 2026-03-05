@@ -1,3 +1,24 @@
+from dataclasses import dataclass
+
+@dataclass
+class DecisionCard:
+    score: float
+    action: str
+    kind: str
+
+class EvaluationResult:
+    def __init__(self, data: dict):
+        self._data = data
+        self.card = DecisionCard(
+            score=data["score"],
+            action=data["action"],
+            kind=data["kind"],
+        )
+    def __getitem__(self, key):
+        return self._data[key]
+    def get(self, key, default=None):
+        return self._data.get(key, default)
+
 # dfs_core/pipeline.py
 from __future__ import annotations
 
@@ -88,7 +109,7 @@ def evaluate_event(
             if flags.get(k) is True:
                 reasons.append(k)
 
-    return {
+    result = {
         "kind": resolved_kind,
         "score_base": score_base,
         "penalty_total": penalty_total,
@@ -98,6 +119,7 @@ def evaluate_event(
         "action_reason": reasons[:3],
         "flags": flags,
     }
+    return EvaluationResult(result)
 
 
 def run_score_pipeline(
