@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 # dfs_core/pipeline.py
 from __future__ import annotations
 
@@ -11,6 +12,7 @@ class DecisionCard:
     score: float
     action: str
     kind: str
+    notes: List[str] = field(default_factory=list)
 
 
 class EvaluationResult:
