@@ -1,4 +1,3 @@
-from dataclasses import dataclass, field
 # dfs_core/pipeline.py
 from __future__ import annotations
 
@@ -140,3 +139,4 @@ def run_score_pipeline(
                 continue
             event = json.loads(line)
             yield evaluate_event(event, policy)
+
