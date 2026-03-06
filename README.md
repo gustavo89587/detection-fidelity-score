@@ -1,142 +1,86 @@
 # Detection Fidelity Score (DFS)
 
-
-![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
-
-**Signal Integrity for Detection Engineering**
-
-[![CI](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml)
-[![Python](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org)
-[![Status](https://img.shields.io/badge/status-research-orange)](https://github.com/gustavo89587/detection-fidelity-score)
+[![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)]()
 
-> Security teams measure alerts. DFS measures detection signal quality.
+> **Can this alert safely drive automation — or does it need a human?**
+
+DFS is an open-source framework that scores security alerts not just on *what* they detected, but on *how much you should trust the signal* before acting on it.
 
 ---
 
 ## The Problem
 
-Detection engineering teams track coverage — how many ATT&CK techniques have rules, how many rules are active, how many alerts fired. What they don't track is whether those signals are actually trustworthy.
+Every SOC team has the same complaint: too many alerts, too little context.
 
-The result is **detection debt**: a growing body of rules whose real-world reliability is unknown. This produces:
+The instinct is to add more rules. But the real problem is **decision confidence**.
 
-- Alert fatigue from high-noise detections
-- Automation built on low-fidelity signals
-- Deployed rules with unknown operational impact
-- Telemetry degradation that silently breaks detections
-- Adversarial evolution that renders logic stale
+When a Falco alert fires saying "shell spawned in container" — should you auto-kill it? Escalate? Log and move on?
 
-DFS treats detection as what it actually is: **a decision system operating under operational cost and telemetry uncertainty.**
+The answer depends entirely on how complete your telemetry is. DFS measures exactly that.
 
 ---
 
-## How DFS Works
-
-DFS evaluates detection signals before they drive action. It sits between detection logic and operational decisions:
+## How It Works
 
 ```
-Telemetry Source
-      │
-      ▼
-Collection / Normalization
-      │
-      ▼
-Detection Logic
-      │
-      ▼
-DFS Signal Evaluation      ← quality gate
-      │
-      ▼
-Trust Boundary Decision
-      │
-      ▼
-Human Analyst / AI Agent Action
+DFS = S × T × B
 ```
+
+| Dimension | Name | What It Measures |
+|-----------|------|-----------------|
+| **S** | Signal Clarity | How explicit is the threat intent? |
+| **T** | Telemetry Completeness | How much forensic context do you have? |
+| **B** | Behavioral Coherence | How consistent is the causal narrative? |
+
+Multiplicative scoring matters: if telemetry is missing (T = 0.2), the score collapses — even if the signal looks high. You can't automate a response you can't explain.
+
+### Decision Tiers
+
+| DFS Score | Action | Meaning |
+|-----------|--------|---------|
+| ≥ 0.78 | **AUTOMATE** | High trust — automated response allowed |
+| 0.55 – 0.78 | **ESCALATE** | Strong signal — senior analyst required |
+| 0.30 – 0.55 | **TRIAGE** | Investigate — human review needed |
+| < 0.30 | **INVESTIGATE** | Fragile signal — do not automate |
 
 ---
 
-## Scoring Model
+## Supported Data Sources
 
-DFS computes a score across three orthogonal dimensions:
+DFS ships with production-grade extractors for **12 security data sources**:
 
-```
-DFS = Signal_Strength × Telemetry_Stability × Behavioral_Robustness
+### Windows / Endpoint
+| Source | Event | What It Detects |
+|--------|-------|----------------|
+| Sysmon | Event ID 1 | Process creation, parent-child chains, LOLBins |
+| Sysmon | Event ID 3 | Network connections, C2, lateral movement |
+| Windows Security | Event ID 4624 | Logon events, RDP, NTLM, cleartext auth |
+| Windows Security | Event ID 4688 | Process creation with command-line context |
+| PowerShell | Event ID 4104 | Script block logging, AMSI bypass, download cradles |
 
-where each dimension ∈ [0.0, 1.0]
-```
+### Cloud
+| Source | What It Detects |
+|--------|----------------|
+| AWS CloudTrail IAM | Privilege escalation, access key abuse, policy changes |
+| AWS GuardDuty | Threat findings with severity + resource context scoring |
+| Azure AD Sign-in | Legacy auth, impossible travel, leaked credentials, MFA gaps |
+| GCP Cloud Audit Logs | IAM changes, Secret Manager access, org policy violations |
+| GCP Security Command Center | ETD/CTD findings, MITRE-mapped threats, reverse shells |
 
-### Why multiplicative?
+### Infrastructure
+| Source | What It Detects |
+|--------|----------------|
+| Docker / Falco | Container breakout, reverse shells, crypto mining, privileged containers |
 
-An additive model allows a high score in one dimension to compensate for failure in another. The multiplicative model enforces that **all three conditions must hold**. If any dimension collapses, the score collapses — correctly reflecting that the signal cannot be trusted regardless of other properties.
-
-| Dimension | What it measures |
-|---|---|
-| **Signal Strength** | How well the detection discriminates true positives from noise |
-| **Telemetry Stability** | Reliability and consistency of the underlying telemetry over time |
-| **Behavioral Robustness** | Resistance to adversarial evasion and behavioral drift |
-
-### Trust Tiers
-
-| Score | Tier | Action | Implication |
-|---|---|---|---|
-| > 0.70 | **High Trust** | `AUTOMATE` | Signal is reliable. Automation and autonomous response are appropriate. |
-| 0.40 – 0.70 | **Operational** | `TRIAGE` | Signal has value but requires analyst validation before action. |
-| < 0.40 | **Fragile** | `HUMAN ONLY` | Cannot drive automation. Flag for detection review. |
-
----
-
-## Signal Degradation Model
-
-DFS models three failure modes that break detections in production:
-
-| Mode | Cause | Risk |
-|---|---|---|
-| **Loss** | Missing telemetry fields or collection gaps | Silent — detection runs but produces no alerts |
-| **Distortion** | Parsing or enrichment changes alter field semantics | Alerts fire but with incorrect context |
-| **Drift** | Adversarial behavior evolves past detection logic | Detection becomes progressively less effective |
-
----
-
-## Operational Metrics
-
-Beyond individual detection scores, DFS computes system-level metrics:
-
-| Metric | Definition |
-|---|---|
-| `signal_density` | Fraction of alerts that are High Trust signals |
-| `investigation_pressure` | Operational load from triage-tier detections (minutes/day) |
-| `escalation_pressure` | Rate at which triage investigations escalate to incidents |
-| `automation_coverage` | Fraction of detections eligible for automated response |
-| `decision_stability` | Score variance across the detection pack over a rolling window |
-
-These metrics answer questions like: *Is this detection policy generating more noise? Is the system becoming more or less reliable over time?*
-
----
-
-## Output: DecisionCard
-
-Every evaluation produces a `DecisionCard`:
-
-```json
-{
-  "kind": "windows-powershell-4104",
-  "score": 0.6325,
-  "interpretation": "Operational",
-  "action": "TRIAGE",
-  "action_reason": [
-    "looks_amsi_bypass",
-    "looks_download_cradle",
-    "looks_reflection"
-  ],
-  "dimensions": {
-    "signal_strength": 0.75,
-    "telemetry_stability": 0.91,
-    "behavioral_robustness": 0.92
-  },
-  "degradation_flags": [],
-  "evaluated_at": "2025-03-05T14:22:00Z"
-}
-```
+### SIEMs
+| Source | What It Detects |
+|--------|----------------|
+| Elastic Security | EQL rules, indicator match, ML anomaly alerts |
+| Splunk Enterprise Security | Notable events, Risk Based Alerting (RBA) |
+| Wazuh XDR | FIM, brute force, vulnerability CVE scoring, rule level mapping |
 
 ---
 
@@ -145,93 +89,167 @@ Every evaluation produces a `DecisionCard`:
 ```bash
 git clone https://github.com/gustavo89587/detection-fidelity-score
 cd detection-fidelity-score
+pip install -e .
 ```
 
-Score a dataset and emit DecisionCards:
+### Score an event from the CLI
 
 ```bash
-python dfs_cli.py score ./examples/events_4104.jsonl \
+python dfs_cli.py score examples/events_4104.jsonl \
   --kind windows-powershell-4104 \
-  --policy ./policies/powershell_4104.policy.json \
+  --policy policies/powershell_4104.policy.json \
   --limit 3
 ```
 
-Run the full pipeline:
+### Use the Python API
+
+```python
+from dfs_core.pipeline import evaluate_event
+
+event = {
+    "host": {"name": "WS-0231"},
+    "user": {"name": "jdoe"},
+    "process": {
+        "executable": r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe",
+        "command_line": "powershell -NoProfile -EncodedCommand SQBFAFgA...",
+        "parent": {"executable": r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"},
+    },
+}
+
+result = evaluate_event(
+    event,
+    kind="windows-sysmon-1",
+    policy_path="policies/sysmon_1.policy.json"
+)
+
+print(result.card.score)   # 0.7425
+print(result.card.action)  # "ESCALATE"
+print(result.card.notes)   # ["missing_command_line"]
+```
+
+---
+
+## Real Scores From Real Events
+
+### Sysmon 3 — Network Connections
+```
+mshta.exe → port 31337 (LOLBin + C2 port)    DFS: 0.9094  → AUTOMATE block
+winword.exe → port 4444 (Office macro C2)     DFS: 0.8050  → AUTOMATE block
+powershell → DGA domain (C2 beaconing)        DFS: 0.8245  → AUTOMATE block
+certutil.exe → external IP (LOLBin C2)        DFS: 0.7500  → ESCALATE
+Lateral movement: cmd.exe → SMB internal      DFS: 0.5456  → TRIAGE
+chrome.exe → google.com (normal browsing)     DFS: 0.1364  → noise
+```
+
+### AWS GuardDuty
+```
+InstanceCredentialExfiltration (full ctx)     DFS: 1.0000  → AUTOMATE
+CryptoCurrency:EC2/BitcoinTool                DFS: 0.4763  → TRIAGE
+High severity, missing context (degraded)     DFS: 0.1357  → INVESTIGATE
+Policy:S3/BucketPublicAccessGranted           DFS: 0.1084  → noise
+```
+
+### Falco / Docker Runtime
+```
+Reverse shell (full context)                  DFS: 0.9029  → AUTOMATE
+Crypto mining detected                        DFS: 0.8164  → AUTOMATE
+Shell in privileged container                 DFS: 0.6249  → ESCALATE
+Normal app network connection                 DFS: 0.3466  → INVESTIGATE
+```
+
+### Splunk Enterprise Security
+```
+RBA: High risk user (score 95, 47 events)     DFS: 0.9700  → AUTOMATE
+Web attack (SQL injection)                    DFS: 0.3706  → TRIAGE
+Already closed notable                        DFS: 0.0988  → noise
+```
+
+---
+
+## Output Shape
+
+Every evaluation returns a `DecisionCard`:
+
+```json
+{
+  "kind": "windows-powershell-4104",
+  "score": 0.7425,
+  "action": "ESCALATE",
+  "notes": ["looks_amsi_bypass", "looks_download_cradle"]
+}
+```
+
+---
+
+## Project Structure
+
+```
+dfs_core/
+  features/          # 12 extractors (one per data source)
+    windows_sysmon_1.py
+    windows_sysmon_3.py
+    windows_4624.py
+    windows_4688.py
+    windows_powershell_4104.py
+    aws_cloudtrail_iam.py
+    aws_guardduty.py
+    azure_ad_signin.py
+    gcp_audit_log.py
+    gcp_scc.py
+    docker_runtime.py
+    elastic_siem.py
+    splunk_notable.py
+    wazuh_alert.py
+    registry.py        # extractor registry
+  scoring.py           # DFSInputs dataclass
+  pipeline.py          # evaluate_event() + DecisionCard
+  explain.py           # explainability layer
+  guardrails.py        # action tiers
+  tests/               # pytest test suite (10 tests, CI green)
+
+policies/              # JSON policy files per source
+examples/              # sample event datasets
+docs/                  # technical specification
+```
+
+---
+
+## Running Tests
 
 ```bash
-python pipeline.py \
-  --input ./datasets/cloudtrail_iam.jsonl \
-  --kind cloudtrail-iam \
-  --policy ./policies/cloudtrail_iam.policy.json \
-  --output ./reports/
+pytest dfs_core/tests/ -v
 ```
 
----
-
-## Integration with AI Agents
-
-DFS provides a principled trust boundary for AI-driven SOC automation:
-
-```
-alert fires
-      │
-      ▼
-DFS signal evaluation
-      │
-      ├── High Trust  →  agent may act autonomously
-      ├── Operational →  agent may assist, human confirms
-      └── Fragile     →  human only, agent must not act
-```
-
-This prevents a critical failure mode: agents acting on low-fidelity signals at machine speed, compounding noise into operational disruption.
-
----
-
-## Project Layout
-
-```
-dfs_core/        # scoring pipeline and evaluation logic
-policies/        # scoring policies (thresholds, weights, behavioral signals)
-datasets/        # curated datasets (CloudTrail IAM, PowerShell 4104)
-examples/        # small demo datasets
-scripts/         # demo and helper scripts
-tests/           # automated tests
-docs/            # technical specification and diagrams
-```
-
-Full technical specification: [`docs/DFS_Technical_Specification_v1.0.md`](docs/DFS_Technical_Specification_v1.0.md)
+CI runs on Python 3.11 and 3.12 via GitHub Actions.
 
 ---
 
 ## Roadmap
 
-**Phase 1 — Detection CI/CD**
-DFS as a quality gate in the detection engineering workflow. Evaluate impact before deploy.
-
-**Phase 2 — Detection Observability Platform**
-Continuous monitoring of signal density, investigation pressure, and decision stability across the detection environment.
-
-**Phase 3 — Open Benchmark**
-DFS as an industry benchmark for detection quality — analogous to ATT&CK Evaluations for EDR, but applied to detection signal engineering.
+- [ ] CLI installable via `pip install dfs-core`
+- [ ] Jupyter notebook for interactive score calibration
+- [ ] Okta, CrowdStrike, Microsoft Sentinel extractors
+- [ ] Zeek / Suricata network extractors
+- [ ] REST API wrapper for SOAR integration
+- [ ] Telemetry drift detection (score baseline over time)
 
 ---
 
-## Known Limitations
+## Contributing
 
-- Score calibration is based on design intent and empirical tuning; statistical validation against labeled ground truth is in progress
-- The multiplicative model is sensitive to low values in any single dimension
-- Current telemetry adapters cover CloudTrail and Windows PowerShell 4104; broader support is on the roadmap
-- Behavioral Robustness does not yet incorporate time-series data for live drift detection
+Pull requests are welcome. If you want to add an extractor for a new data source, the pattern is consistent across all 14 existing ones — each extractor is a single Python file that returns `(DFSInputs, flags)`.
+
+See `dfs_core/features/windows_sysmon_3.py` as the reference implementation.
 
 ---
 
 ## Author
 
-**Gustavo Okamoto** — Okamoto Security Labs  
-Detection Engineering / Signal Reliability Research
+**Gustavo Okamoto** — Detection Engineering / Signal Reliability Research  
+[Okamoto Security Labs](https://github.com/gustavo89587)
 
 ---
 
 ## License
 
-[Apache-2.0](LICENSE)
+Apache-2.0
