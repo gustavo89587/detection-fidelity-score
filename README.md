@@ -4,9 +4,9 @@
 
 **Can this alert — or this AI agent action — safely drive automation?**
 
-[![CI](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/ci.yml/badge.svg)](https://github.com/gustavo89587/detection-fidelity-score/actions)
+[![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
-![License](https://img.shields.io/badge/license-Apache%202.0-green)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/gustavo89587/detection-fidelity-score/blob/main/LICENSE)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Extractors](https://img.shields.io/badge/extractors-16-blueviolet)
 
