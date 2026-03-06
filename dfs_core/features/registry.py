@@ -10,13 +10,14 @@ class FeatureSpec:
     module: str
     factory: str  # nome do callable dentro do módulo (ex.: "extract")
 
-FEATURES: Dict[str, FeatureSpec] = {
-    # foco agora: só garantir 4104
-    "windows-powershell-4104": FeatureSpec(
-        module="dfs_core.features.windows_powershell_4104",
-        factory="extract",  # ajuste se o seu nome for outro
-    ),
 
+FEATURES: Dict[str, FeatureSpec] = {
+    "windows-powershell-4104": FeatureSpec( 
+        module="dfs_core.features.windows_powershell_4104",
+        factory="extract",
+    ),
+    "aws-guardduty": FeatureSpec(module="dfs_core.features.aws_guardduty", factory="extract"),
+    "guardduty":     FeatureSpec(module="dfs_core.features.aws_guardduty", factory="extract"),
     # você pode deixar os outros mapeados, mas NÃO vamos importar agora
     "windows-4624": FeatureSpec(module="dfs_core.features.windows_4624", factory="extract"),
     "windows-4688": FeatureSpec(module="dfs_core.features.windows_4688", factory="extract"),
