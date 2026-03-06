@@ -36,6 +36,8 @@ FEATURES: Dict[str, FeatureSpec] = {
     "csi":       FeatureSpec(module="dfs_core.features.wifi_csi", factory="extract"),
     "cve-context": FeatureSpec(module="dfs_core.features.cve_context", factory="extract"),
     "cve":         FeatureSpec(module="dfs_core.features.cve_context", factory="extract"),
+    "agent-action": FeatureSpec(module="dfs_core.features.agent_action", factory="extract"),
+    "agent":        FeatureSpec(module="dfs_core.features.agent_action", factory="extract"),
 }
 
 class FeatureNotFoundError(RuntimeError):
