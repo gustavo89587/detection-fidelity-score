@@ -32,6 +32,10 @@ FEATURES: Dict[str, FeatureSpec] = {
     "gcp-scc":        FeatureSpec(module="dfs_core.features.gcp_scc",         factory="extract"),
     "docker":         FeatureSpec(module="dfs_core.features.docker_runtime",  factory="extract"),
     "windows-sysmon-3": FeatureSpec(module="dfs_core.features.windows_sysmon_3", factory="extract"),
+    "wifi-csi":  FeatureSpec(module="dfs_core.features.wifi_csi", factory="extract"),
+    "csi":       FeatureSpec(module="dfs_core.features.wifi_csi", factory="extract"),
+    "cve-context": FeatureSpec(module="dfs_core.features.cve_context", factory="extract"),
+    "cve":         FeatureSpec(module="dfs_core.features.cve_context", factory="extract"),
 }
 
 class FeatureNotFoundError(RuntimeError):
