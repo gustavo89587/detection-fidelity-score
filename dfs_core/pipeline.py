@@ -1,6 +1,5 @@
-# dfs_core/pipeline.py
-from __future__ import annotations
 
+from __future__ import annotations
 import json
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, Optional, List
