@@ -1,5 +1,7 @@
 # Detection Fidelity Score (DFS)
 
+![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)
+
 **Signal Integrity for Detection Engineering**
 
 [![CI](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg)](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml)
