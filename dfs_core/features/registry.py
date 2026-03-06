@@ -24,6 +24,14 @@ FEATURES: Dict[str, FeatureSpec] = {
     "windows-sysmon-1": FeatureSpec(module="dfs_core.features.windows_sysmon_1", factory="extract"),
     "registry": FeatureSpec(module="dfs_core.features.registry", factory="extract"),
     "aws-cloudtrail-iam": FeatureSpec(module="dfs_core.features.aws_cloudtrail_iam", factory="extract"),
+    "elastic-siem":   FeatureSpec(module="dfs_core.features.elastic_siem",   factory="extract"),
+    "splunk-notable": FeatureSpec(module="dfs_core.features.splunk_notable",  factory="extract"),
+    "wazuh-alert":    FeatureSpec(module="dfs_core.features.wazuh_alert",     factory="extract"),     
+    "azure-ad-signin": FeatureSpec(module="dfs_core.features.azure_ad_signin", factory="extract"),
+    "gcp-audit":      FeatureSpec(module="dfs_core.features.gcp_audit_log",   factory="extract"),
+    "gcp-scc":        FeatureSpec(module="dfs_core.features.gcp_scc",         factory="extract"),
+    "docker":         FeatureSpec(module="dfs_core.features.docker_runtime",  factory="extract"),
+    "windows-sysmon-3": FeatureSpec(module="dfs_core.features.windows_sysmon_3", factory="extract"),
 }
 
 class FeatureNotFoundError(RuntimeError):
