@@ -8,7 +8,7 @@
 ![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](https://github.com/gustavo89587/detection-fidelity-score/blob/main/LICENSE)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Extractors](https://img.shields.io/badge/extractors-16-blueviolet)
+![Extractors](https://img.shields.io/badge/extractors-22-blueviolet)
 
 </div>
 
@@ -70,11 +70,15 @@ Prompt injection: summarize→exfiltrate       1.000  0.170  0.871  0.1480  BLOC
 AI agent: delete prod DB, no approval        1.000  0.570  0.738  0.4204  TRIAGE
 Legit CDN traffic spike (whitelisted)        0.057  0.490  0.613  0.0173  ALLOW  ←
 Intruder crawling in server room (Wi-Fi CSI) 1.000  0.850  0.900  0.7650  ESCALATE
+Safe web search (data_source, no policy)     0.125  0.950  0.800  0.0950  PASS   ←
+Anthropic API call (whitelisted + approved)  0.090  0.980  0.900  0.0794  PASS   ←
 ```
 
-The two `←` rows tell the story:
-- **CVSS 9.8 → BACKLOG**: No exploit, no reachability, no real threat. CVSS alone is noise.
-- **10Gbps CDN spike → ALLOW**: Known source, whitelisted. The circuit never trips for legitimate traffic.
+The `←` rows tell the story:
+- **CVSS 9.8 → BACKLOG**: No exploit, no reachability. CVSS alone is noise.
+- **10Gbps CDN spike → ALLOW**: Known source, whitelisted. The circuit never trips.
+- **Safe web search → PASS**: Low-risk tool, no policy violation, clean context.
+- **Anthropic API whitelisted → PASS**: Trusted vendor + human approved = autonomous.
 
 ---
 
@@ -116,6 +120,7 @@ The two `←` rows tell the story:
 |--------|-----------|---------|
 | AI Agent Actions | `agent-action` | Prompt injection, chain depth, irreversible actions |
 | CVE Context | `cve-context` | EPSS + CISA KEV + reachability — real exploitability |
+| Agent↔Tool Protocol | `protocol` | JSON-RPC 2.0 scoring — OpenAI, Anthropic, any tool call |
 
 ### Physical / Network
 | Source | Extractor | Detects |
@@ -136,9 +141,9 @@ from dfs_core.guardrail import evaluate_before_action
 decision = evaluate_before_action(action_event, kind="agent-action")
 
 if decision.approved:
-    execute()          # DFS ≥ threshold
+    execute()
 else:
-    request_human(decision.reason)   # Hard gate
+    request_human(decision.reason)
 ```
 
 Or as a decorator:
@@ -174,6 +179,61 @@ Every decision is written to an append-only SHA-256 hash chain. Modifying any en
 ledger.verify_chain()
 # VerificationResult(valid=True, total=47, reason='Chain intact — 47 entries verified')
 ```
+
+### `liability_ledger.py` — Digital Signature + Compliance Proof
+Extends the audit ledger with HMAC-SHA256 agent signatures and compliance proofs. Every entry attests which policies were evaluated, what the rationale was, and exports a conformance certificate for audit submission.
+
+```python
+signer = AgentSigner("agent-deploy-01")
+ledger = DFSLiabilityLedger(signer)
+
+proof = create_proof(
+    event=action_event, dfs_score=0.574,
+    signal=0.6, trust=0.8, coherence=0.957,
+    decision="ESCALATE",
+    rationale="Production deploy with rollback — below AUTOMATE threshold",
+    policies=["POL-DEPLOY-001"],
+)
+entry = ledger.append("GUARDRAIL", action_event, proof, "deploy_to_production")
+
+cert = ledger.export_certificate()
+# { chain_valid: True, decisions: {ESCALATE:1, TRIAGE:2}, standard: "DFS-RFC-001 S×T×B v1.0",
+#   oasis_cosai_workstream: "Risk Governance" }
+```
+
+### `agent_firewall.py` — Real-Time Agent I/O Protection
+Application-layer firewall that intercepts and DFS-scores every agent request and tool response before execution. Six built-in policies cover secret exfiltration, prompt injection, PII leakage, destructive commands, goal drift, and code execution.
+
+```python
+from dfs_core.agent_firewall import DFSAgentFirewall
+
+firewall = DFSAgentFirewall()
+
+# Before tool execution
+result = firewall.check_request(
+    agent_id="agent-01", tool_name="web_search",
+    tool_type="data_source", method="query",
+    params={"query": "Q3 earnings"}, purpose="Summarize report",
+)
+# DFS=0.0950 → PASS
+
+# After tool response
+clean, result = firewall.check_response(
+    agent_id="agent-01", tool_name="crm",
+    tool_type="data_source",
+    content=raw_response,
+)
+# PII detected → REDACT [REDACTED] via POL-003
+```
+
+Firewall decision tiers are **inverted** — DFS measures risk, so lower score = safer traffic:
+
+| DFS Score | Action | Meaning |
+|-----------|--------|---------|
+| < 0.15 | **PASS** | Clean traffic — forward normally |
+| 0.15 – 0.35 | **AUDIT** | Forward + log alert |
+| 0.35 – 0.60 | **REDACT** | Remove sensitive content, then forward |
+| ≥ 0.60 | **BLOCK** | Drop, notify, log violation |
 
 ---
 
@@ -224,6 +284,8 @@ detection-fidelity-score/
 │   ├── circuit_breaker.py      # Velocity anomaly + error storm detection
 │   ├── abac_token.py           # Per-action signed authorization tokens
 │   ├── audit_ledger.py         # SHA-256 hash-chained immutable log
+│   ├── liability_ledger.py     # HMAC-SHA256 signed entries + compliance proof + OASIS certificate
+│   ├── agent_firewall.py       # Real-time agent I/O firewall (6 built-in policies)
 │   └── features/
 │       ├── registry.py         # Extractor registry — maps kind → module
 │       ├── elastic_siem.py     # Elastic SIEM extractor
@@ -244,10 +306,11 @@ detection-fidelity-score/
 │       ├── agent_action.py     # AI agent action (prompt injection, chain depth)
 │       ├── cve_context.py      # CVE scoring (EPSS + KEV + reachability)
 │       ├── wifi_csi.py         # Wi-Fi CSI physical telemetry
-│       └── cyber_wall.py       # Active defense IPS (honey ports, C2, exfil)
+│       ├── cyber_wall.py       # Active defense IPS (honey ports, C2, exfil)
+│       └── protocol.py         # Agent↔Tool JSON-RPC 2.0 scoring (OpenAI, Anthropic)
 ├── tests/
 │   └── test_extractors.py      # pytest suite — all extractors
-└── .github/workflows/ci.yml    # GitHub Actions CI
+└── .github/workflows/tests.yml # GitHub Actions CI
 ```
 
 ---
