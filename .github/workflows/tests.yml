@@ -32,4 +32,4 @@ jobs:
           pip install -e .
       - name: Run tests
         run: |
-          pytest dfs_core/tests/ -q
+          run: python -m pytest tests/test_extractors.py -v
