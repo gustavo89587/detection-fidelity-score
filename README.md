@@ -107,6 +107,27 @@ Roadmap & Community
 
 [ ] TypeScript/Go SDKs for cross-language guardrails.
 
+---
+
+## 🛡️ AI Security & Jailbreak Resilience
+Este framework foi projetado para neutralizar técnicas avançadas de **Prompt Injection** e ataques de grupos estatais (ex: Volt Typhoon/China), utilizando o colapso do escore de confiança ($DFS \approx 0$) para bloquear ações incoerentes de agentes autônomos.
+
+### 🧪 Provas de Inevitabilidade (Simulação)
+O sistema conta com um motor de simulação que valida a governança em cenários críticos:
+
+* **TC-01 (Telemetry Blindness):** Bloqueio imediato quando atacantes deletam logs.
+* **TC-03 (Prompt Hijacking):** Identifica e corta tentativas de Jailbreak em agentes de IA.
+* **TC-04 (High Fidelity):** Resposta automatizada em milissegundos para ameaças confirmadas.
+
+### 📜 Auditoria Forense
+Cada decisão gera um log imutável (`dfs_audit_trail.log`), garantindo rastreabilidade total para conformidade **SOC2/ISO 27001**.
+
+---
+
+
+
+
+
 Author: Gustavo Okamoto
 
 License: Apache License 2.0 — Standard for OASIS Open projects.
