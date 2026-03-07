@@ -26,23 +26,32 @@ The system flows from signal sources through telemetry validation and behavioral
                      v                          v
               [ DFS SCORING ENGINE ] -> [ POLICY ENGINE ] -> [ ACTION ]
 
-SECTION 5 — Decision Governance ModelDFS ≥ 0.78: AUTOMATE (Secure-by-design).0.55–0.78: ESCALATE (Human-in-the-loop).0.30–0.55: TRIAGE (Active approval).< 0.30: BLOCK (Hard gate).
+## SECTION 5 — Decision Governance ModelDFS ≥ 0.78: AUTOMATE (Secure-by-design).0.55–0.78: ESCALATE (Human-in-the-loop).0.30–0.55: TRIAGE (Active approval).< 0.30: BLOCK (Hard gate).
+---
 
+## SECTION 6 — Real-World ExampleIn a suspicious AWS role assumption, if $S=0.82$, $T=0.74$, and $B=0.65$, the $DFS=0.39$ (TRIAGE). If telemetry fails ($T=0.05$), the score collapses ($DFS=0.02$), blocking automation.
+---
 
-SECTION 6 — Real-World ExampleIn a suspicious AWS role assumption, if $S=0.82$, $T=0.74$, and $B=0.65$, the $DFS=0.39$ (TRIAGE). If telemetry fails ($T=0.05$), the score collapses ($DFS=0.02$), blocking automation.
+## SECTION 7 — Integration with AI AgentsDFS prevents prompt injection and destructive actions by gating LLM tool calls based on runtime decision trust.
+---
 
-SECTION 7 — Integration with AI AgentsDFS prevents prompt injection and destructive actions by gating LLM tool calls based on runtime decision trust.
+## SECTION 8 — Cryptographic Accountability LayerUses HMAC signatures and tamper-evident logs to provide immutable audit trails for every automated decision.
+---
 
-SECTION 8 — Cryptographic Accountability LayerUses HMAC signatures and tamper-evident logs to provide immutable audit trails for every automated decision.
+## SECTION 9 — Comparison with Existing SystemsUnlike CVSS (Severity) or EPSS (Exploit Probability), DFS focuses on Automation Trustworthiness.
+---
 
-SECTION 9 — Comparison with Existing SystemsUnlike CVSS (Severity) or EPSS (Exploit Probability), DFS focuses on Automation Trustworthiness.
+## SECTION 10 — Reference Implementation ArchitectureModular design with data extractors and a scoring engine, supporting Python, Go, and TypeScript.
+---
 
-SECTION 10 — Reference Implementation ArchitectureModular design with data extractors and a scoring engine, supporting Python, Go, and TypeScript.
+##SECTION 11 — Enterprise IntegrationIntegrates with Splunk, Elastic, Azure Sentinel, and OpenAI/Anthropic frameworks as a cross-platform trust layer.
+---
 
-SECTION 11 — Enterprise IntegrationIntegrates with Splunk, Elastic, Azure Sentinel, and OpenAI/Anthropic frameworks as a cross-platform trust layer.
+## SECTION 12 — RFC Proposal (RFC-DFS-001)Formalizes DFS as a candidate standard metric for interoperability in autonomous agent governance.
+---
 
-SECTION 12 — RFC Proposal (RFC-DFS-001)Formalizes DFS as a candidate standard metric for interoperability in autonomous agent governance.
+## SECTION 13 — Future Research DirectionsExplores adaptive scoring, ML-assisted telemetry validation, and distributed trust for multi-agent systems.
+---
 
-SECTION 13 — Future Research DirectionsExplores adaptive scoring, ML-assisted telemetry validation, and distributed trust for multi-agent systems.
-
-SECTION 14 — Standardization PotentialPositioned to evolve into an industry-standard metric, providing a reference model for secure-by-design AI.              
+## SECTION 14 — Standardization PotentialPositioned to evolve into an industry-standard metric, providing a reference model for secure-by-design AI.
+---              
