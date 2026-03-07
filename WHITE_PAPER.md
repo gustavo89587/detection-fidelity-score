@@ -27,12 +27,12 @@ Incoherent Behavior: Destructive actions caused by LLM hallucinations or model d
 
 ## 3. The DFS Mathematical ModelThe DFS replaces qualitative "confidence" with a quantitative, multiplicative metric:
 
-**$$DFS = S \times T \times B$$
+````$$DFS = S \times T \times B$$````
 
 Variable,Definition,Security Focus
-# S,Signal Clarity,Intrinsic severity and significance of the event.
-# T,Telemetry Integrity,"Reliability and health of the data source (SIEM, EDR, Cloud)."
-# B,Behavioral Coherence,Contextual alignment with historical system patterns.
+ S,Signal Clarity,Intrinsic severity and significance of the event.
+ T,Telemetry Integrity,"Reliability and health of the data source (SIEM, EDR, Cloud)."
+ B,Behavioral Coherence,Contextual alignment with historical system patterns.
 
 The Collapse Principle: Because the model is multiplicative, a failure in any single pillar (e.g., $T = 0.05$ during a log-tampering attack) causes the entire score to collapse, triggering an immediate HARD BLOCK.
 
