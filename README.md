@@ -2,6 +2,8 @@
 
 # Detection Fidelity Score (DFS)
 
+![Logo](assets/logo.png)
+
 **Can this alert — or this AI agent action — safely drive automation?**
 
 [![DFS Tests](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/gustavo89587/detection-fidelity-score/actions/workflows/tests.yml)
@@ -29,8 +31,8 @@ The **Detection Fidelity Score (DFS)** is a reference framework designed to supp
 
 Security teams and AI systems face two compounding crises:
 
-- **Alert fatigue:** SOCs receive thousands of alerts per day. Most are noise. The ones that aren't look identical to the ones that are.
-- **Agent autonomy:** AI agents can now execute code, transfer funds, modify infrastructure, and delete data — without a standard for deciding *when* they should act alone vs. when a human must intervene.
+- **Alert fatigue:** SOCs receive thousands of alerts per day. Most are noise.
+- **Agent autonomy:** AI agents can now execute code and modify infrastructure without a standard for deciding *when* they should act alone vs. when a human must intervene.
 
 DFS answers a critical question for modern governance:
 > **"How much should I trust this event — enough to act on it automatically?"**
@@ -39,7 +41,7 @@ DFS answers a critical question for modern governance:
 
 ## How It Works: The S × T × B Model
 
-Unlike additive scoring systems, DFS uses a multiplicative model. **If any dimension collapses to zero, the final score collapses.** This prevents "noisy but high-severity" events from triggering false automations.
+Unlike additive scoring systems, DFS uses a multiplicative model. **If any dimension collapses to zero, the final score collapses**. This prevents "noisy but high-severity" events from triggering false automations.
 
 | Dimension | Question | Core Metric |
 |-----------|----------|-------------|
@@ -47,51 +49,41 @@ Unlike additive scoring systems, DFS uses a multiplicative model. **If any dimen
 | **T** — Telemetry | How complete/trustworthy is the data? | Provenance & Evidence |
 | **B** — Behavioral Coherence | Does the full context hang together? | Policy & Logic |
 
-```math
+$$
 DFS = S \times T \times B
+$$
 
-Decision Tiers (Actionable Outputs)
+### Decision Tiers (Actionable Outputs)
 
-DFS Score,Action,Governance Meaning
-≥ 0.78,AUTOMATE,Secure-by-design autonomous execution
-0.55 – 0.78,ESCALATE,Human-in-the-loop: Passive notification
-0.30 – 0.55,TRIAGE,Human-in-the-loop: Active approval required
-< 0.30,BLOCK,Hard gate — Policy violation or insufficient trust
+| DFS Score | Action | Governance Meaning |
+|-----------|--------|--------------------|
+| ≥ 0.78 | AUTOMATE | Secure-by-design autonomous execution |
+| 0.55 – 0.78 | ESCALATE | Human-in-the-loop: Passive notification |
+| 0.30 – 0.55 | TRIAGE | Human-in-the-loop: Active approval required |
+| < 0.30 | BLOCK | Hard gate — Policy violation or insufficient trust |
 
-Agent Infrastructure & Compliance
+---
+
+## Agent Infrastructure & Compliance
 DFS provides the enforcement layer required for audit-ready AI deployments:
 
-🛡 Agent Firewall (Real-Time I/O Protection)
-Application-layer protection that intercepts agent requests and responses. It enforces 6 built-in policies: PII Redaction, Secret Exfiltration, Destructive Commands, Goal Drift, Prompt Injection, and Unauthorized Code Execution.
+* **🛡 Agent Firewall (Real-Time I/O Protection):** Application-layer protection that intercepts agent requests and responses. Enforces 6 built-in policies: PII Redaction, Secret Exfiltration, Destructive Commands, Goal Drift, Prompt Injection, and Unauthorized Code Execution.
+* **📜 Liability Ledger (Audit-Ready Proofs):** Uses HMAC-SHA256 signatures to provide an immutable record of evaluated policies, telemetry state, and CoSAI mapping.
+* **🔐 ABAC Action Tokens:** Zero-trust authorization for agents. Every sensitive tool call requires a cryptographically signed, time-bounded, single-use token.
 
-📜 Liability Ledger (Audit-Ready Proofs)
-Every decision exports a DFS Conformance Certificate. This uses HMAC-SHA256 signatures to provide an immutable record of:
-
-Evaluated policies and rationale.
-
-Telemetry state at the time of decision.
-
-OASIS CoSAI Workstream mapping for compliance reporting.
-
-🔐 ABAC Action Tokens
-Zero-trust authorization for agents. Every sensitive tool call requires a cryptographically signed, time-bounded, single-use token issued only upon a passing DFS score.
-
-Supported Data Sources (Extractors)
+### Supported Data Sources (Extractors)
 DFS is interoperable across SIEMs, Cloud Providers, and AI Ecosystems:
+* **SIEM/XDR:** Elastic SIEM, Splunk ES, Wazuh.
+* **Endpoint:** Sysmon (1, 3), Windows Event Logs (4624, 4688), PowerShell (4104).
+* **Cloud:** AWS (CloudTrail, GuardDuty), Azure (AD Sign-in), GCP (Audit, SCC).
+* **AI/App:** Agent Action Protocol (OpenAI/Anthropic), CVE Context (EPSS/KEV/Reachable).
+* **Physical:** Wi-Fi CSI (Gait/Intruder detection).
 
-SIEM/XDR: Elastic SIEM, Splunk ES, Wazuh.
+---
 
-Endpoint: Sysmon (1, 3), Windows Event Logs (4624, 4688), PowerShell (4104).
-
-Cloud: AWS (CloudTrail, GuardDuty), Azure (AD Sign-in), GCP (Audit, SCC).
-
-AI/App: Agent Action Protocol (OpenAI/Anthropic), CVE Context (EPSS/KEV/Reachable).
-
-Physical: Wi-Fi CSI (Gait/Intruder detection).
-
-Quick Start
-Bash
-git clone [https://github.com/gustavo89587/detection-fidelity-score](https://github.com/gustavo89587/detection-fidelity-score)
+## Quick Start
+```bash
+git clone https://github.com/gustavo89587/detection-fidelity-score
 cd detection-fidelity-score
 pip install -e .
 Run the unified test suite:
@@ -107,6 +99,6 @@ Roadmap & Community
 
 [ ] TypeScript/Go SDKs for cross-language guardrails.
 
-Author: Gustavo Okamoto · github.com/gustavo89587
+Author: Gustavo Okamoto
 
 License: Apache License 2.0 — Standard for OASIS Open projects.
