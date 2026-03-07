@@ -64,90 +64,77 @@ The DFS engine sits as a decision layer between detection (SIEM/XDR) and executi
 ## SECTION 5 — Decision Governance Model
 Standardized tiers for interoperable automation trust:
 
-DFS Score,Action,Governance Meaning
-≥ 0.78,AUTOMATE,Secure-by-design autonomous execution.
-0.55 – 0.77,ESCALATE,Human-in-the-loop: Passive review required.
-0.30 – 0.54,TRIAGE,Active Approval: Block until human sign-off.
-< 0.30,BLOCK,Hard Gate: Insufficient trust for action.
+
+| DFS Score | Action | Governance Meaning |
+| :--- | :--- | :--- |
+| **≥ 0.78** | **AUTOMATE** | Secure-by-design autonomous execution. |
+| **0.55 – 0.77** | **ESCALATE** | Human-in-the-loop: Passive review required. |
+| **0.30 – 0.54** | **TRIAGE** | Active Approval: Block until human sign-off. |
+| **< 0.30** | **BLOCK** | Hard Gate: Insufficient trust for action. |
 
 ---
 
 ## SECTION 6 — Real-World Example
-Scenario: Suspicious AWS Role Assumption
+**Scenario:** Suspicious AWS Role Assumption
 
-S = 0.85 (Critical Privilege).
+> **S** = 0.85 (Critical Privilege)
+> **T** = 0.90 (Verified CloudTrail logs)
+> **B** = 0.20 (First time this user accesses this region)
+> 
+> **DFS = 0.15 -> ACTION: BLOCK**
 
-T = 0.90 (Verified CloudTrail logs).
-
-B = 0.20 (First time this user accesses this region).
-
-DFS = 0.15 -> ACTION: BLOCK.
-
-Result: Even with a high signal and good telemetry, the lack of behavioral coherence prevents an automated lockout that could disrupt a legitimate developer.
+**Result:** Even with a high signal and good telemetry, the lack of behavioral coherence prevents an automated lockout that could disrupt a legitimate developer.
 
 ---
 
 ## SECTION 7 — Integration with AI Agents
-
-DFS acts as a Runtime Guardrail. When an LLM (OpenAI/Anthropic) calls a tool (e.g., delete_s3_bucket), the request is intercepted by the DFS Engine. The engine validates if the environment telemetry is stable before allowing the API call to proceed.
+DFS acts as a **Runtime Guardrail**. When an LLM (OpenAI/Anthropic) calls a tool (e.g., `delete_s3_bucket`), the request is intercepted by the DFS Engine. The engine validates if the environment telemetry is stable before allowing the API call to proceed.
 
 ---
 
 ## SECTION 8 — Cryptographic Accountability Layer
+To meet compliance (SOC2/ISO), every DFS decision generates a **Decision Certificate**:
 
-To meet compliance (SOC2/ISO), every DFS decision generates a Decision Certificate:
-
-HMAC Signatures: Prevents tampering of scores.
-
-Liability Ledger: Immutable logs of why an automation was allowed or denied.
+*   **HMAC Signatures:** Prevents tampering of scores.
+*   **Liability Ledger:** Immutable logs of why an automation was allowed or denied.
 
 ---
 
 ## SECTION 9 — Comparison with Existing Systems
 
-* CVSS: Measures Severity (How bad is it?).
-
-* EPSS: Measures Probability (Will it be exploited?).
-
-* DFS: Measures Trustworthiness (Can we automate the response?).
+*   **CVSS:** Measures Severity (How bad is it?).
+*   **EPSS:** Measures Probability (Will it be exploited?).
+*   **DFS:** Measures Trustworthiness (Can we automate the response?).
 
 ---
 
 ## SECTION 10 — Reference Implementation Architecture
+Modular design using **Python/Go**. Components include:
 
-Modular design using Python/Go. Components include:
-
-* Extractors: Normalizers for Splunk, Elastic, and Cloud APIs.
-
-* Gatekeepers: Middleware for AI Agent tool calls.
+*   **Extractors:** Normalizers for Splunk, Elastic, and Cloud APIs.
+*   **Gatekeepers:** Middleware for AI Agent tool calls.
 
 ---
 
 ## SECTION 11 — Enterprise Integration
-
 Designed for cross-platform trust layers including:
 
-* SIEM: Wazuh, Splunk, Elastic.
-
-* Cloud: AWS, GCP, Azure.
-
-* Apps: Docker, OneDrive, Microsoft 365.
+*   **SIEM:** Wazuh, Splunk, Elastic.
+*   **Cloud:** AWS, GCP, Azure.
+*   **Apps:** Docker, OneDrive, Microsoft 365.
 
 ---
 
 ## SECTION 13 — Future Research Directions
 
-* Adaptive Scoring: ML-driven weights for Behavioral Coherence.
-
-* Distributed Trust: Cross-agent scoring for multi-agent swarms.
+*   **Adaptive Scoring:** ML-driven weights for Behavioral Coherence.
+*   **Distributed Trust:** Cross-agent scoring for multi-agent swarms.
 
 ---
 
 ## SECTION 14 — Standardization Potential
+Aligns with the mission of **OASIS CoSAI** (Coalition for Secure AI). DFS aims to be the standard metric for secure-by-design autonomous systems.
 
-Aligns with the mission of OASIS CoSAI (Coalition for Secure AI). DFS aims to be the standard metric for secure-by-design autonomous systems.
-
----
 
 
 
