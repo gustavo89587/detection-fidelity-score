@@ -109,22 +109,50 @@ Roadmap & Community
 
 ---
 
-## 🛡️ AI Security & Jailbreak Resilience
-Este framework foi projetado para neutralizar técnicas avançadas de **Prompt Injection** e ataques de grupos estatais (ex: Volt Typhoon/China), utilizando o colapso do escore de confiança ($DFS \approx 0$) para bloquear ações incoerentes de agentes autônomos.
+## AI️ AI Security & Jailbreak Resilience
+This framework is designed to counteract advanced Prompt Injection techniques and attacks by state groups (e.g. Volt Typhoon/China), utilizing trust score collapse ($DFS \approx 0$) to block incoherent actions by autonomous agents.
 
-### 🧪 Provas de Inevitabilidade (Simulação)
-O sistema conta com um motor de simulação que valida a governança em cenários críticos:
+### 🧪 Proofs of inevitability (simulation)
+The system has a simulation engine that validates governance in critical scenarios:
 
-* **TC-01 (Telemetry Blindness):** Bloqueio imediato quando atacantes deletam logs.
-* **TC-03 (Prompt Hijacking):** Identifica e corta tentativas de Jailbreak em agentes de IA.
-* **TC-04 (High Fidelity):** Resposta automatizada em milissegundos para ameaças confirmadas.
+* * * TC-01 (Telemetry Blindness):** immediate blocking when attackers delete logs.
+* * * TC-03 (Prompt Hijacking): * * identifies and cuts jailbreak attempts on AI agents.
+* * * TC-04 (High Fidelity):** automated response in milliseconds to confirmed threats.
 
-### 📜 Auditoria Forense
-Cada decisão gera um log imutável (`dfs_audit_trail.log`), garantindo rastreabilidade total para conformidade **SOC2/ISO 27001**.
+### 📜 Forensic Audit
+Each decision generates an immutable log ('dfs_audit_trail.log'), ensuring full traceability to **SOC2/ISO 27001 * * compliance.
+---
 
 ---
 
+## 🛡️ AI Security & Jailbreak Resilience
+This framework is architected to neutralize advanced **Prompt Injection** techniques and state-sponsored cyberattacks (e.g., Volt Typhoon). By leveraging the trust score collapse principle ($DFS \approx 0$), the engine automatically gates incoherent or unauthorized actions attempted via autonomous AI agents.
 
+### 🧪 Validation & Robustness (Real-Time Simulation)
+The repository includes a simulation engine that validates governance across critical "stress-test" scenarios:
+
+* **TC-01 (Telemetry Blindness):** Immediate block when attackers attempt to delete or tamper with local logs.
+* **TC-03 (Prompt Hijacking):** Identifies and cuts off Jailbreak attempts aimed at manipulating AI tool calls.
+* **TC-04 (High Fidelity):** Enabling automated responses in milliseconds for verified, high-confidence threats.
+
+### 📜 Forensic Audit Trail
+Every decision made by the DFS engine generates an immutable audit log (`dfs_audit_trail.log`), ensuring full traceability for **SOC2, ISO 27001**, and regulatory compliance.
+
+---
+
+## 🗺️ Roadmap & Future Vision (RFC-DFS)
+The DFS ecosystem is evolving toward a global standard. Our upcoming milestones include:
+- [ ] **ML-Driven Behavioral Weights:** Dynamic weight adjustments for the 'B' pillar using machine learning models.
+- [ ] **Native Ecosystem Connectors:** Out-of-the-box integration with CrowdStrike, SentinelOne, and Google Chronicle.
+- [ ] **Cross-Agent Consensus:** A trust protocol for multi-agent autonomous swarms.
+
+## 🤝 How to Contribute
+We believe in collaborative security. If you are a researcher from **CoSAI**, **OASIS**, or a Detection Engineer, here is how you can help:
+1. **Submit New Scenarios:** Help us harden the DFS against emerging Prompt Injection variants.
+2. **Improve Extractors:** Contribute normalization logic for new cloud and telemetry telemetry sources.
+3. **Refine the RFC:** Join the discussion on governance thresholds within our `SPECIFICATION.md`.
+
+---
 
 
 
