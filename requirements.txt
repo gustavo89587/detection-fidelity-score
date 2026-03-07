@@ -1,0 +1,12 @@
+# Core AI SDKs
+openai>=1.0.0
+anthropic>=0.5.0
+
+# Data & Security Integration
+pandas>=2.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Testing & Quality
+pytest>=7.4.0
+black>=23.7.0
