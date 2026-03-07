@@ -8,50 +8,41 @@
 ---
 
 ## SECTION 1 — Problem Statement
-Current Security Operations Center (SOC) methodologies and autonomous AI agent frameworks suffer from a critical "trust gap" in automation. As organizations transition from human-centric triage to automated response, they encounter three systemic failures:
-
-* **Alert Fatigue:** SOCs receive thousands of alerts per day.
-* **Telemetry Degradation:** Automation often triggers based on cached or incomplete data.
-* **Agentic Autonomy Risks:** AI agents can now execute destructive commands without a standard for environmental certainty.
-
----
+Current security operations and AI frameworks suffer from a "trust gap". Automation often triggers based on noisy alerts, incomplete telemetry, or misinterpreted context, leading to destructive autonomous actions.
 
 ## SECTION 2 — Detection Fidelity Score Model
-DFS is a multi-dimensional metric that evaluates the reliability of a security event context.
+The DFS is a multiplicative metric: **DFS = S × T × B**.
+* **S (Signal Clarity):** Significance of the event [0,1].
+* **T (Telemetry Integrity):** Reliability of the data source [0,1].
+* **B (Behavioral Coherence):** Contextual logic across systems [0,1].
 
-### 2.1 Mathematical Definition
-The score is defined by three independent variables normalized between [0, 1]:
-* **S (Signal Clarity):** Significance of the event.
-* **T (Telemetry Integrity):** Trustworthiness of the data source.
-* **B (Behavioral Coherence):** Contextual logic across systems.
-
-**The Multiplicative Model:**
-$$DFS = S \times T \times B$$
-
----
-
-## SECTION 3 — Decision Governance Model
-The framework employs rigid Decision Tiers to govern autonomous systems:
-
-| DFS Score | Action | Governance Meaning |
-|-----------|--------|--------------------|
-| ≥ 0.78 | AUTOMATE | Secure-by-design autonomous execution |
-| 0.55 – 0.78 | ESCALATE | Human-in-the-loop: Passive review |
-| 0.30 – 0.55 | TRIAGE | Active Approval required |
-| < 0.30 | BLOCK | Hard gate — Policy violation |
-
----
+## SECTION 3 — Conceptual Architecture
+The system flows from signal sources through telemetry validation and behavioral analysis into a scoring engine, which informs the policy engine and automation layer.
 
 ## SECTION 4 — ASCII Architecture Diagram
-
 ```text
-[ Security Signals ]    [ Cloud Logs ]    [ Sensor Health ]
-         |                     |                 |
-         v                     v                 v
-+-------------------------------------------------------+
-|                 DFS SCORING ENGINE                    |
-|             Calculation: S x T x B = Score            |
-+--------------------------+----------------------------+
-                           |
-                           v
-              [ DECISION ENFORCEMENT ]
+[ Signals ] -> [ Telemetry Validation ] -> [ Behavior Analysis ]
+                     |                          |
+                     v                          v
+              [ DFS SCORING ENGINE ] -> [ POLICY ENGINE ] -> [ ACTION ]
+
+SECTION 5 — Decision Governance ModelDFS ≥ 0.78: AUTOMATE (Secure-by-design).0.55–0.78: ESCALATE (Human-in-the-loop).0.30–0.55: TRIAGE (Active approval).< 0.30: BLOCK (Hard gate).
+
+
+SECTION 6 — Real-World ExampleIn a suspicious AWS role assumption, if $S=0.82$, $T=0.74$, and $B=0.65$, the $DFS=0.39$ (TRIAGE). If telemetry fails ($T=0.05$), the score collapses ($DFS=0.02$), blocking automation.
+
+SECTION 7 — Integration with AI AgentsDFS prevents prompt injection and destructive actions by gating LLM tool calls based on runtime decision trust.
+
+SECTION 8 — Cryptographic Accountability LayerUses HMAC signatures and tamper-evident logs to provide immutable audit trails for every automated decision.
+
+SECTION 9 — Comparison with Existing SystemsUnlike CVSS (Severity) or EPSS (Exploit Probability), DFS focuses on Automation Trustworthiness.
+
+SECTION 10 — Reference Implementation ArchitectureModular design with data extractors and a scoring engine, supporting Python, Go, and TypeScript.
+
+SECTION 11 — Enterprise IntegrationIntegrates with Splunk, Elastic, Azure Sentinel, and OpenAI/Anthropic frameworks as a cross-platform trust layer.
+
+SECTION 12 — RFC Proposal (RFC-DFS-001)Formalizes DFS as a candidate standard metric for interoperability in autonomous agent governance.
+
+SECTION 13 — Future Research DirectionsExplores adaptive scoring, ML-assisted telemetry validation, and distributed trust for multi-agent systems.
+
+SECTION 14 — Standardization PotentialPositioned to evolve into an industry-standard metric, providing a reference model for secure-by-design AI.              
