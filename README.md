@@ -154,6 +154,14 @@ We believe in collaborative security. If you are a researcher from **CoSAI**, **
 
 ---
 
+---
+
+## 🏛️ CoSAI Framework Integration
+This project is built to support the **Coalition for Secure AI (CoSAI)** initiatives:
+- **Project Contribution:** DFS serves as a reference tool for the `ws4-secure-design-agentic-systems` workstream.
+- **Risk Mitigation:** Neutralizes "Insecure Output Handling" and "Excessive Agency" by enforcing a mandatory trust threshold before any API tool call.
+- **Open Standards:** Developed under the RFC-DFS-001 proposal to foster vendor-agnostic security automation.
+
 
 
 Author: Gustavo Okamoto

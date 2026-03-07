@@ -132,8 +132,14 @@ Designed for cross-platform trust layers including:
 
 ---
 
-## SECTION 14 — Standardization Potential
-Aligns with the mission of **OASIS CoSAI** (Coalition for Secure AI). DFS aims to be the standard metric for secure-by-design autonomous systems.
+---
+
+## SECTION 14 — CoSAI & Industry Alignment (Workstream 4)
+DFS is designed as a technical implementation of the **Secure Design for Agentic Systems** framework proposed by CoSAI. 
+
+- **WS4 Alignment:** Provides a runtime "Decision Gate" to mitigate "Unintended Actions" in autonomous agents.
+- **WS3 Alignment:** Functions as a dynamic "AI Risk Scorecard" for continuous monitoring of automated security interventions.
+- **Interoperability:** The multiplicative model (S x T x B) offers a universal metric for the CoSAI Risk Map mitigation strategies.
 
 
 
