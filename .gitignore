@@ -60,3 +60,5 @@ data/
 *.pfx
 *.p12
 *.crt
+# Archived files
+_archive/
