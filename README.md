@@ -24,7 +24,7 @@ To understand the mathematical rigor, fundamentals of AI governance, and detaile
 
 ---
 
-## 📄 Technical Documentation
+## 📄 DFS White Paper
 For a deep dive into the mathematical framework, decision thresholds, and runtime enforcement logic, please refer to the official White Paper:
 
 👉 **[Read the DFS White Paper (RFC-DFS-001)](https://github.com/gustavo89587/detection-fidelity-score/blob/main/WHITE_PAPER.md)**
