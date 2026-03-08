@@ -24,6 +24,16 @@ To understand the mathematical rigor, fundamentals of AI governance, and detaile
 
 ---
 
+## 📄 Technical Documentation
+For a deep dive into the mathematical framework, decision thresholds, and runtime enforcement logic, please refer to the official White Paper:
+
+👉 **[Read the DFS White Paper (RFC-DFS-001)](https://github.com/gustavo89587/detection-fidelity-score/blob/main/WHITE_PAPER.md)**
+
+---
+
+
+---
+
 ## 🏛 OASIS CoSAI Alignment
 
 The **Detection Fidelity Score (DFS)** is a reference framework designed to support the mission of the **Coalition for Secure AI (CoSAI)** under the OASIS Open consortium. It provides a standardized, interoperable metric for AI Risk Governance and Secure-by-Design Agentic Systems.
